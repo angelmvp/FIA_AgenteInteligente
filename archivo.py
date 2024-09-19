@@ -5,13 +5,15 @@ import os
 
 SIZE_CELDA = 20 
 CASILLAS = {
+    "pared": {"color": "red", "costos": {"humano": None, "mono": None, "pulpo": None, "sasquatch": None}},
+    "camino": {"color": "white", "costos": {"humano": 1, "mono": 1, "pulpo": 1, "sasquatch": 1}},
     "cerro": {"color": "black", "costos": {"humano": None, "mono": None, "pulpo": None, "sasquatch": 15}},
     "tierra": {"color": "brown", "costos": {"humano": 1, "mono": 2, "pulpo": 2, "sasquatch": 4}},
     "agua": {"color": "blue", "costos": {"humano": 2, "mono": 4, "pulpo": 1, "sasquatch": None}},
     "arena": {"color": "yellow", "costos": {"humano": 3, "mono": 3, "pulpo": None, "sasquatch": 3}},
     "bosque": {"color": "green", "costos": {"humano": 4, "mono": 1, "pulpo": 3, "sasquatch": 4}},
     "pantano": {"color": "purple", "costos": {"humano": 5, "mono": 5, "pulpo": 2, "sasquatch": 5}},
-    "nieve": {"color": "gray", "costos": {"humano": 5, "mono": None, "pulpo": None, "sasquatch": 3}},
+    "nieve": {"color": "magenta", "costos": {"humano": 5, "mono": None, "pulpo": None, "sasquatch": 3}},
 }
 class Casilla:
     def __init__(self,tipo):
@@ -23,6 +25,8 @@ class Casilla:
                 canvas.create_rectangle(x * SIZE_CELDA, y * SIZE_CELDA,
                                 (x + 1) * SIZE_CELDA, (y + 1) * SIZE_CELDA,
                                 fill=self.color, outline="gray")
+                self.x=x
+                self.y=y
     def visitada(self):
         self.visitada=True
     def obtenerCosto(self,objeto):
@@ -35,20 +39,11 @@ class Agente:
         self.mapa=mapa
     def mover(self, direccion):
         x, y = self.posicion
-        if direccion == 'Left' and x > 0:
-            self.posicion[0] -= 1
-        elif direccion == 'Right' and x < len(self.mapa.casillas[0]) - 1:
-            self.posicion[0] += 1
-        elif direccion == 'Up' and y > 0:
-            self.posicion[1] -= 1
-        elif direccion == 'Down' and y < len(self.mapa.casillas) - 1:
-            self.posicion[1] += 1
         casilla = self.mapa.casillas[self.posicion[1]][self.posicion[0]]
         costo = casilla.obtenerCosto(self.tipo)
         if costo is None:
             return False
         casilla.visitada
-        print(f"El {self.tipo_ser} se movió a {self.posicion} con un costo de {costo}.")
         return True
     
     def dibujar(self, canvas):
@@ -57,9 +52,13 @@ class Agente:
                                 (x + 1) * SIZE_CELDA, (y + 1) * SIZE_CELDA,
                                 fill="red", outline="gray")    
 
-
-
-
+def seleccionarArchivo():
+    archivo = filedialog.askopenfilename(title="Selecciona archivo")
+    if archivo:
+        matriz = leerMatriz(archivo)
+        repaint(matriz)  
+        return matriz
+        
 def leerMatriz(archivo):
     matriz = []
     extension = os.path.splitext(archivo)[1]  
@@ -69,37 +68,41 @@ def leerMatriz(archivo):
         delimitador = ' '  
     with open(archivo, newline='') as archivo:
         for linea in archivo:
-            fila_convertida = [int(valor) for valor in linea.strip().split(delimitador)]
-            matriz.append(fila_convertida)
+            fila= []
+            valores=linea.split(delimitador)
+            for valor in valores:
+                numero=int(valor)
+                fila.append(numero)
+            matriz.append(fila)
     return matriz
 
-def seleccionarArchivo():
-    archivo = filedialog.askopenfilename(title="Selecciona archivo")
-    if archivo:
-        matriz = leerMatriz(archivo)
-        repaint(matriz)  
-        return matriz
 def obtenerTipoCasilla(numero):
-    if numero==1:
-        return "cerro"
+    if numero==0:
+        return "pared"
+    elif numero==1:
+        return "camino"
     elif numero==2:
-        return "tierra"
+        return "cerro"
     elif numero==3:
-        return "agua"
+        return "tierra"
     elif numero==4:
-        return "arena"
+        return "agua"
     elif numero==5:
-        return "bosque"
+        return "arena"
     elif numero==6:
+        return "bosque"
+    elif numero==7:
         return "pantano"
     else:
         return "nieve" 
+    
 def dibujarMatriz(matriz):
     for i in range(len(matriz)):
         for j in range(len(matriz[i])):
             tipo_casilla = obtenerTipoCasilla(matriz[i][j])  
             casilla = Casilla(tipo_casilla)
             casilla.dibujar(canvas, j, i)
+
 def repaint(nueva_matriz):
     global matriz
     matriz = nueva_matriz
@@ -114,6 +117,15 @@ def mover_agente(event):
         return
     canvas.delete("all")  
     dibujarMatriz(matriz) 
+def mostrarTipoCasilla(event):
+    pass
+def actualizarTipoCasilla():
+    pass
+def seleccionarAgente():
+    #humano,chango,pulpo,piegrande
+    pass
+def Run():
+    pass
 
 
 
@@ -125,7 +137,7 @@ ventana.title("Matriz con Agente")
 canvas = tk.Canvas(ventana, width=500, height=500)
 canvas.pack()
 agente_posicion = [5, 0]
-matriz=seleccionarArchivo()
+matriz=seleccionarArchivo
 agente=Agente(tipo="humano",posicion=agente_posicion,mapa=matriz)
 agente.dibujar(canvas)
 
@@ -142,6 +154,7 @@ menu_archivo.add_command(label="Cargar Nuevo Archivo", command=seleccionarArchiv
 #menu_archivo.add_command(label="Guardar Mapa",command=guardarMapa)
 #menu_archivo.add_command(label="Generar Aleatorio",command=mapaAleatorio)
 
-boton_iniciar= Button(ventana,text="iniciar",command=dibujarMatriz)
+boton_iniciar= Button(ventana,text="iniciar",command=Run)
 boton_iniciar.pack()
+
 ventana.mainloop()
