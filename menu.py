@@ -95,7 +95,8 @@ class Game:
         loadMap.load_map()
         self.map_data = loadMap.get_map()
         self.state = "map"
-
+    def clear_map(self):
+        self.map_data=None
     def init_default_map(self, n):
         pass
         #aqui ps pa generar el mapa aleatorio deun tamaño n
@@ -171,6 +172,7 @@ class Game:
                     elif self.state == "map":
                         if event.key ==pg.K_BACKSPACE:
                             self.state="menu"
+                            self.clear_map()
                 elif event.type == pg.MOUSEBUTTONDOWN:
                     if self.state == "map":
                         mouse_x, mouse_y = pg.mouse.get_pos()
