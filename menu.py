@@ -7,7 +7,7 @@ pg.init()
 SCREEN_WIDTH = 1200  
 SCREEN_HEIGHT = 600
 MENU_WIDTH = 400  
-MAP_WIDTH = SCREEN_WIDTH - MENU_WIDTH #maximo mapa 800 pixeles 
+MAP_WIDTH = SCREEN_WIDTH - MENU_WIDTH #maximo mapa 800 pixeles pero se podari ajuestar automaticametne no se
 SIZE_CELDA = 30 #se puede cambiar y cambia el tamaño de todo el mapa namas, se podria ajustar si el tamaño es muy grande
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -59,7 +59,7 @@ class MainMenu:
         if self.selected_option == 0: # pa cargar el archivo
             self.game.load_map()  
         elif self.selected_option == 1:
-            self.game.init_default_map(5)# length de 5 se puede configuar para que el usuario seleciona  
+            self.game.init_default_map(5)# pasarel el paraemtero del tamaño 
         elif self.selected_option == 2:#pa salir
             pg.quit()
             sys.exit()
@@ -122,8 +122,8 @@ class Game:
                 for x in range(len(self.map_data[y])):
                     casilla_type = self.get_casilla_type(self.map_data[y][x])
                     color = CASILLAS[casilla_type]["color"]
-                    pg.draw.rect(screen, color, ( SIZE_CELDA+ x * SIZE_CELDA, SIZE_CELDA +y * SIZE_CELDA, SIZE_CELDA, SIZE_CELDA))
-                    pg.draw.rect(screen, BLACK, ( SIZE_CELDA +x * SIZE_CELDA, SIZE_CELDA + y * SIZE_CELDA, SIZE_CELDA, SIZE_CELDA), 1)
+                    pg.draw.rect(screen, color, ( SIZE_CELDA + x * SIZE_CELDA, SIZE_CELDA + y * SIZE_CELDA, SIZE_CELDA, SIZE_CELDA))
+                    pg.draw.rect(screen, BLACK, ( SIZE_CELDA + x * SIZE_CELDA, SIZE_CELDA + y * SIZE_CELDA, SIZE_CELDA, SIZE_CELDA), 1)
             for i in range(len(self.map_data[0])):
                 label = font.render(chr(65 + i), True, WHITE)
                 screen.blit(label, (SIZE_CELDA +i * SIZE_CELDA + SIZE_CELDA // 2 - label.get_width() // 2, 0))
@@ -153,8 +153,8 @@ class Game:
             return "snow"
     #ahorita para mostrar tipo de casilla nadamas, igual puede servir para cambiar el tipo
     def handle_click(self, x, y):
-        col = (-SIZE_CELDA + x) // SIZE_CELDA
-        row = (-SIZE_CELDA + y) // SIZE_CELDA
+        col = (x-SIZE_CELDA) // SIZE_CELDA
+        row = (y-SIZE_CELDA) // SIZE_CELDA
         if col < len(self.map_data[0]) and row < len(self.map_data):
             self.casilla_selected = (row, col)
     #el menu lateral para mostrar el tipo y poder cambiar el valor 
@@ -170,7 +170,7 @@ class Game:
             casilla_type = self.get_casilla_type(self.map_data[row][col])
             label = font.render(f"Selected: {casilla_type}", True, CYAN)
             screen.blit(label, (MAP_WIDTH + 10, 80))
-            #change_celda_type??
+            #change_celda_type?? aqui cambiarle 
     def draw_menu_agent(self):
         pg.draw.rect(screen,WHITE,(MAP_WIDTH,0,MENU_WIDTH,SCREEN_HEIGHT))
         font = pg.font.SysFont("comicsans", 20)
