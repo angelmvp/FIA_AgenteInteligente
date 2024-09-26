@@ -13,6 +13,7 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 HIGHLIGHT_COLOR = (255, 0, 0)
 GRAY=(128,128,128)
+CYAN=(0,255,255)
 CASILLAS = {
     "wall": {"color": (0, 0, 0)},
     "road": {"color": (255, 255, 255)},
@@ -87,19 +88,32 @@ class Game:
     def __init__(self):
         self.main_menu = MainMenu(self)
         self.map_data = None
-        self.selected_cell = None
+        self.casilla_selected = None
         self.state = "menu"  # Estado inicial
 
     def load_map(self):
         loadMap = LoadMap()
         loadMap.load_map()
         self.map_data = loadMap.get_map()
+        self.casilla_selected=None
         self.state = "map"
     def clear_map(self):
         self.map_data=None
     def init_default_map(self, n):
         pass
         #aqui ps pa generar el mapa aleatorio deun tamaño n
+    #pa las imagenes una idea de seleccionar el agente
+    def loadImages(self):
+        human_img = pg.image.load("img/human.png")
+        monkey_img = pg.image.load("img/monkey.png")
+        octopus_img = pg.image.load("img/octopus.png")
+        sasquatch_img = pg.image.load("img/sasquatch.png")
+
+        human_img = pg.transform.scale(human_img, (150, 150))
+        monkey_img = pg.transform.scale(monkey_img, (150, 150))
+        octopus_img = pg.transform.scale(octopus_img, (150, 150))
+        sasquatch_img = pg.transform.scale(sasquatch_img, (150, 150))
+        screen.blit(human_img,(SCREEN_WIDTH-200,SCREEN_HEIGHT-200))
     #quiza esto pueda ser otra case para manejar diferentes mapas??
     def draw_map(self):
         if self.map_data:
@@ -142,19 +156,37 @@ class Game:
         col = (-SIZE_CELDA + x) // SIZE_CELDA
         row = (-SIZE_CELDA + y) // SIZE_CELDA
         if col < len(self.map_data[0]) and row < len(self.map_data):
-            self.selected_cell = (row, col)
+            self.casilla_selected = (row, col)
     #el menu lateral para mostrar el tipo y poder cambiar el valor 
-    def draw_menu(self):
+    def draw_menu_casillas(self):
         pg.draw.rect(screen, GRAY, (MAP_WIDTH, 0, MENU_WIDTH, SCREEN_HEIGHT)) 
-        font = pg.font.SysFont("comicsans", 30)
-        
-        if self.selected_cell:
-            row, col = self.selected_cell
+        font = pg.font.SysFont("comicsans", 20)
+        labelAdvance = font.render("Presione Enter para Avanzar a agente",True,WHITE)
+        screen.blit(labelAdvance,(SCREEN_WIDTH-MENU_WIDTH,20))
+        labelGoBack=font.render("Presione Bakspace parae regresar",True,WHITE)
+        screen.blit(labelGoBack,(SCREEN_WIDTH-MENU_WIDTH+50,50))
+        if self.casilla_selected:
+            row, col = self.casilla_selected
             casilla_type = self.get_casilla_type(self.map_data[row][col])
-            label = font.render(f"Selected: {casilla_type}", True, WHITE)
-            screen.blit(label, (MAP_WIDTH + 10, 50))
+            label = font.render(f"Selected: {casilla_type}", True, CYAN)
+            screen.blit(label, (MAP_WIDTH + 10, 80))
             #change_celda_type??
-
+    def draw_menu_agent(self):
+        pg.draw.rect(screen,WHITE,(MAP_WIDTH,0,MENU_WIDTH,SCREEN_HEIGHT))
+        font = pg.font.SysFont("comicsans", 20)
+        label=font.render("Aqui va el menu para seleccionar agente, inicio y final del juego",True,BLACK)
+        screen.blit(label,(MAP_WIDTH+10,50))
+        label2=font.render("Presione backspace para regresar ",True,BLACK)
+        screen.blit(label2,(MAP_WIDTH+10,90))
+    def draw_game_running(self):
+        pg.draw.rect(screen,CYAN,(MAP_WIDTH,0,MENU_WIDTH,SCREEN_HEIGHT))
+        font = pg.font.SysFont("comicsans", 20)
+        label=font.render("Aqui Se supone ya entroe el juego en accion ",True,BLACK)
+        screen.blit(label,(MAP_WIDTH+10,50))
+        label2=font.render("Presione r para cargar el agente y reinicar el juego",True,BLACK)
+        screen.blit(label2,(MAP_WIDTH+10,90))
+        label3=font.render("Presione ESC para REgresar al menu",True,BLACK)
+        screen.blit(label3,(MAP_WIDTH+10,120))
     def run(self):
         running = True
         while running:
@@ -170,25 +202,50 @@ class Game:
                         elif event.key == pg.K_RETURN:
                             self.main_menu.select_option()
                     elif self.state == "map":
-                        if event.key ==pg.K_BACKSPACE:
-                            self.state="menu"
+                        if event.key == pg.K_BACKSPACE:
+                            self.state = "menu"
                             self.clear_map()
+                        elif event.key == pg.K_RETURN:  
+                            print("Escape")
+                            self.state = "map_agent"
+                    elif self.state == "map_agent":
+                        if event.key == pg.K_BACKSPACE:
+                            self.state = "map"
+                        elif event.key==pg.K_RETURN:
+                            self.state="running_game"
+                    elif self.state=="running_game":
+                        if event.key==pg.K_r:
+                            self.state="map_agent"
+                        elif event.key==pg.K_ESCAPE:
+                            self.state="menu"
                 elif event.type == pg.MOUSEBUTTONDOWN:
                     if self.state == "map":
                         mouse_x, mouse_y = pg.mouse.get_pos()
                         if mouse_x < MAP_WIDTH: 
                             self.handle_click(mouse_x, mouse_y)
-
+            
             if self.state == "menu":
+                self.clear_map()
                 self.main_menu.draw()
             elif self.state == "map":
                 screen.fill(BLACK)  
                 self.draw_map()
-                self.draw_menu()  
+                self.draw_menu_casillas()
+            elif self.state == "map_agent":
+                screen.fill(BLACK)
+                self.draw_map()  
+                self.draw_menu_agent()
+                self.loadImages()
+            elif self.state=="running_game":
+                screen.fill(BLACK)
+                self.draw_map()#Aqui se supondria ya debemos de enmascarara de una vez el mapa
+                                #pero supongo habra que hacer otro mapa nuevo on ose 
+                self.draw_game_running()
 
             pg.display.flip()
 
         pg.quit()
         sys.exit()
+
 game = Game()
 game.run()
