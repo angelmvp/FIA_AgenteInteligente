@@ -1,7 +1,6 @@
 import pygame as pg
 import sys
 import os
-from tkinter import filedialog
 
 pg.init()
 SCREEN_WIDTH = 1200  
@@ -67,7 +66,7 @@ class MainMenu:
 class LoadMap:
     def __init__(self):
         self.map_data = None
-        self.maps_dir = 'maps'
+        self.maps_dir = 'resources/map'
         self.maps_list = self.get_maps_list()
         self.selected_map_index = 0
 
@@ -132,10 +131,10 @@ class Game:
         #aqui ps pa generar el mapa aleatorio deun tamaño n
     #pa las imagenes una idea de seleccionar el agente
     def loadImages(self):
-        human_img = pg.image.load("img/human.png")
-        monkey_img = pg.image.load("img/monkey.png")
-        octopus_img = pg.image.load("img/octopus.png")
-        sasquatch_img = pg.image.load("img/sasquatch.png")
+        human_img = pg.image.load("resources/image/human.png")
+        monkey_img = pg.image.load("resources/image/monkey.png")
+        octopus_img = pg.image.load("resources/image/octopus.png")
+        sasquatch_img = pg.image.load("resources/image/sasquatch.png")
 
         human_img = pg.transform.scale(human_img, (150, 150))
         monkey_img = pg.transform.scale(monkey_img, (150, 150))
