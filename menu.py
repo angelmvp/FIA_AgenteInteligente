@@ -36,7 +36,7 @@ class MainMenu:
         self.title_font = pg.font.SysFont("comicsans", 70)
         self.font = pg.font.SysFont("comicsans", 50)
         self.game = game
-#dibujar el menuprincipalgod
+
     def draw(self):
         screen.fill(BLACK)
         title = self.title_font.render("Menu Principal del Juwego", True, WHITE)
@@ -48,7 +48,7 @@ class MainMenu:
             else:
                 label = self.font.render(option, True, WHITE)
             screen.blit(label, (SCREEN_WIDTH // 2 - label.get_width() // 2, 250 + i * 60))
-#moverse en el menu
+
     def move_cursor(self, direction):
         if direction == "up":
             self.selected_option = (self.selected_option - 1) % len(self.options)
@@ -56,20 +56,28 @@ class MainMenu:
             self.selected_option = (self.selected_option + 1) % len(self.options)
 
     def select_option(self):
-        if self.selected_option == 0: # pa cargar el archivo
-            self.game.load_map()  
+        if self.selected_option == 0:
+            self.game.show_map_selection()
         elif self.selected_option == 1:
-            self.game.init_default_map(5)# pasarel el paraemtero del tamaño 
-        elif self.selected_option == 2:#pa salir
+            self.game.init_default_map(5)
+        elif self.selected_option == 2:
             pg.quit()
             sys.exit()
 #se ocupa tkintergod para cargar el archivo nadamas, 
 class LoadMap:
     def __init__(self):
-        self.map_data=None
-    def load_map(self):
-        archivo = filedialog.askopenfilename(title="Selecciona archivo")
-        if archivo:
+        self.map_data = None
+        self.maps_dir = 'maps'
+        self.maps_list = self.get_maps_list()
+        self.selected_map_index = 0
+
+    def get_maps_list(self):
+        return [f for f in os.listdir(self.maps_dir) if os.path.isfile(os.path.join(self.maps_dir, f))]
+
+    def load_selected_map(self):
+        if self.maps_list:
+            selected_map = self.maps_list[self.selected_map_index]
+            archivo = os.path.join(self.maps_dir, selected_map)
             self.map_data = self.convert_file(archivo)
             print(self.map_data)
 
@@ -82,14 +90,34 @@ class LoadMap:
                 fila = [int(valor) for valor in linea.split(delimitador)]
                 matriz.append(fila)
         return matriz
+
     def get_map(self):
         return self.map_data
+
 class Game:
     def __init__(self):
         self.main_menu = MainMenu(self)
         self.map_data = None
         self.casilla_selected = None
         self.state = "menu"  # Estado inicial
+        self.load_map = LoadMap()
+
+    def show_map_selection(self):
+        self.state = "map_selection"
+
+    def draw_map_selection(self):
+        screen.fill(BLACK)
+        title_font = pg.font.SysFont("comicsans", 70)
+        font = pg.font.SysFont("comicsans", 50)
+        title = title_font.render("Selecciona un Mapa", True, WHITE)
+        screen.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 100))
+
+        for i, map_name in enumerate(self.load_map.maps_list):
+            if i == self.load_map.selected_map_index:
+                label = font.render(map_name, True, HIGHLIGHT_COLOR)
+            else:
+                label = font.render(map_name, True, WHITE)
+            screen.blit(label, (SCREEN_WIDTH // 2 - label.get_width() // 2, 250 + i * 60))
 
     def load_map(self):
         loadMap = LoadMap()
@@ -157,9 +185,9 @@ class Game:
         row = (y-SIZE_CELDA) // SIZE_CELDA
         if col < len(self.map_data[0]) and row < len(self.map_data):
             self.casilla_selected = (row, col)
-    #el menu lateral para mostrar el tipo y poder cambiar el valor 
+    #el menu lateral para mostrar el tipo y poder cambiar el valor
     def draw_menu_casillas(self):
-        pg.draw.rect(screen, GRAY, (MAP_WIDTH, 0, MENU_WIDTH, SCREEN_HEIGHT)) 
+        pg.draw.rect(screen, GRAY, (MAP_WIDTH, 0, MENU_WIDTH, SCREEN_HEIGHT))
         font = pg.font.SysFont("comicsans", 20)
         labelAdvance = font.render("Presione Enter para Avanzar a agente",True,WHITE)
         screen.blit(labelAdvance,(SCREEN_WIDTH-MENU_WIDTH,20))
@@ -170,7 +198,7 @@ class Game:
             casilla_type = self.get_casilla_type(self.map_data[row][col])
             label = font.render(f"Selected: {casilla_type}", True, CYAN)
             screen.blit(label, (MAP_WIDTH + 10, 80))
-            #change_celda_type?? aqui cambiarle 
+            #change_celda_type?? aqui cambiarle
     def draw_menu_agent(self):
         pg.draw.rect(screen,WHITE,(MAP_WIDTH,0,MENU_WIDTH,SCREEN_HEIGHT))
         font = pg.font.SysFont("comicsans", 20)
@@ -187,6 +215,7 @@ class Game:
         screen.blit(label2,(MAP_WIDTH+10,90))
         label3=font.render("Presione ESC para REgresar al menu",True,BLACK)
         screen.blit(label3,(MAP_WIDTH+10,120))
+
     def run(self):
         running = True
         while running:
@@ -201,45 +230,56 @@ class Game:
                             self.main_menu.move_cursor("down")
                         elif event.key == pg.K_RETURN:
                             self.main_menu.select_option()
+                    elif self.state == "map_selection":
+                        if event.key == pg.K_UP:
+                            self.load_map.selected_map_index = (self.load_map.selected_map_index - 1) % len(
+                                self.load_map.maps_list)
+                        elif event.key == pg.K_DOWN:
+                            self.load_map.selected_map_index = (self.load_map.selected_map_index + 1) % len(
+                                self.load_map.maps_list)
+                        elif event.key == pg.K_RETURN:
+                            self.load_map.load_selected_map()
+                            self.map_data = self.load_map.get_map()
+                            self.state = "map"
                     elif self.state == "map":
                         if event.key == pg.K_BACKSPACE:
                             self.state = "menu"
                             self.clear_map()
-                        elif event.key == pg.K_RETURN:  
-                            print("Escape")
+                        elif event.key == pg.K_RETURN:
                             self.state = "map_agent"
                     elif self.state == "map_agent":
                         if event.key == pg.K_BACKSPACE:
                             self.state = "map"
-                        elif event.key==pg.K_RETURN:
-                            self.state="running_game"
-                    elif self.state=="running_game":
-                        if event.key==pg.K_r:
-                            self.state="map_agent"
-                        elif event.key==pg.K_ESCAPE:
-                            self.state="menu"
+                        elif event.key == pg.K_RETURN:
+                            self.state = "running_game"
+                    elif self.state == "running_game":
+                        if event.key == pg.K_r:
+                            self.state = "map_agent"
+                        elif event.key == pg.K_ESCAPE:
+                            self.state = "menu"
                 elif event.type == pg.MOUSEBUTTONDOWN:
                     if self.state == "map":
                         mouse_x, mouse_y = pg.mouse.get_pos()
-                        if mouse_x < MAP_WIDTH: 
+                        if mouse_x < MAP_WIDTH:
                             self.handle_click(mouse_x, mouse_y)
-            
+
             if self.state == "menu":
                 self.clear_map()
                 self.main_menu.draw()
+            elif self.state == "map_selection":
+                self.draw_map_selection()
             elif self.state == "map":
-                screen.fill(BLACK)  
+                screen.fill(BLACK)
                 self.draw_map()
                 self.draw_menu_casillas()
             elif self.state == "map_agent":
                 screen.fill(BLACK)
-                self.draw_map()  
+                self.draw_map()
                 self.draw_menu_agent()
                 self.loadImages()
-            elif self.state=="running_game":
+            elif self.state == "running_game":
                 screen.fill(BLACK)
-                self.draw_map()#Aqui se supondria ya debemos de enmascarara de una vez el mapa
-                                #pero supongo habra que hacer otro mapa nuevo on ose 
+                self.draw_map()
                 self.draw_game_running()
 
             pg.display.flip()
