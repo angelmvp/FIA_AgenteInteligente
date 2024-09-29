@@ -11,7 +11,7 @@ def main():
 
     # Crear el mapa y las entidades
     mapa = Mapa(15, 15)
-    mapa.load_map('../map/matriz.csv')
+    mapa.load_map('../map/maze.csv')
 
     # Crear al agente
     agente = Agente(7, 7)
