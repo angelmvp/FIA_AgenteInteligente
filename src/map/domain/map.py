@@ -53,10 +53,21 @@ class Map:
 
   def print(self):
     """
-    Prints the grid to the console.
+    Prints the grid to the console in a grid format.
     """
-    print('Map:')
+    print('-= Map =-')
     print(f'Rows: {self.__rows}')
     print(f'Columns: {self.__columns}')
-    for row in self.__grid:
-      print(row)
+
+    # Print top border
+    print('┌' + '┬'.join(['─' * 3] * self.__columns) + '┐')
+
+    for row in range(self.__rows):
+      # Print row with values
+      print('│' + '│'.join([f' {str(cell)} ' for cell in self.__grid[row]]) + '│')
+      # Print row separator
+      if row != self.__rows - 1:
+        print('├' + '┼'.join(['─' * 3] * self.__columns) + '┤')
+
+    # Replace the last row separator with the bottom border
+    print('└' + '┴'.join(['─' * 3] * self.__columns) + '┘')

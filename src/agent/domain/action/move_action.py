@@ -125,5 +125,5 @@ class MoveAction(Action, ABC):
     agent.set_direction(new_coordinates.get_direction())
     agent.update_position(x, y)
     agent.increase_accumulated_movement_cost(movement_cost)
-    agent.increase_total_steps()
+    agent.increase_steps()
     return ActionResult.SUCCESS

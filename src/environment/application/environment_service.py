@@ -24,21 +24,6 @@ class EnvironmentService:
     """
     self.__terrain_repository = terrain_repository
 
-  def print_discovered_map(self, environment: Environment):
-    """
-    Prints the discovered parts of the environment.
-
-    Args:
-      environment (Environment): The environment to be printed.
-    """
-    for column in range(environment.get_columns()):
-      for row in range(environment.get_rows()):
-        if environment.is_discovered(row, column):
-          print('D', end=' ')
-        else:
-          print('U', end=' ')
-      print()
-
   def create_cells_from_map(self, map: Map) -> list[list[Cell]]:
     """
     Creates a grid of cells from a map.

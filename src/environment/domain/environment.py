@@ -41,6 +41,7 @@ class Environment:
       agent (Agent): The agent to be added.
     """
     self.__agents.append(agent)
+    self.__discovered_map[agent.get_x()][agent.get_y()] = True
 
   def get_cell(self, x: int, y: int) -> Optional[Cell]:
     """
@@ -53,9 +54,9 @@ class Environment:
     Returns:
       Cell: The cell at the specified position.
     """
-    if x < 0 or x >= self.__rows or y < 0 or y >= self.__columns:
+    if y < 0 or y >= self.__rows or x < 0 or x >= self.__columns:
       return None
-    return self.__grid[x][y]
+    return self.__grid[y][x]
 
   def update_discovered_map(self, x: int, y: int, value: bool):
     """
@@ -66,7 +67,7 @@ class Environment:
       y (int): The y-coordinate of the position to update.
       value (bool): The new value for the position.
     """
-    self.__discovered_map[x][y] = value
+    self.__discovered_map[y][x] = value
 
   def get_discovered_map(self) -> list[list[bool]]:
     """
@@ -88,7 +89,7 @@ class Environment:
     Returns:
       bool: True if the cell has been discovered, False otherwise.
     """
-    return self.__discovered_map[x][y]
+    return self.__discovered_map[y][x]
 
   def update_state(self, x: int, y: int, new_value: Cell):
     """
@@ -99,7 +100,7 @@ class Environment:
       y (int): The y-coordinate of the position to update.
       new_value (Cell): The new value for the position.
     """
-    self.__grid[x][y] = new_value
+    self.__grid[y][x] = new_value
 
   def is_obstacle_for(self, agent: Agent, x: int, y: int) -> Optional[bool]:
     """
@@ -135,3 +136,49 @@ class Environment:
       int: The number of columns.
     """
     return self.__columns
+
+  def is_agent_in_position(self, x: int, y: int) -> bool:
+    """
+    Checks if an agent is in a specific position.
+
+    Args:
+      x (int): The x-coordinate of the position.
+      y (int): The y-coordinate of the position.
+
+    Returns:
+      bool: True if an agent is in the position, False otherwise.
+    """
+    for agent in self.__agents:
+      if agent.get_x() == x and agent.get_y() == y:
+        return True
+    return False
+
+  def print_discovered_map(self):
+    """
+    Prints the discovered parts of the environment.
+    """
+    # Print the top border of the map
+    top_border = '┌' + '┬'.join(['─' * 3] * self.__columns) + '┐'
+    print(top_border)
+
+    for y in range(self.__rows):
+      # Print each row with cell values
+      row = '│'
+      for x in range(self.__columns):
+        if self.is_agent_in_position(x, y):
+          cell = ' \033[43m \033[0m '
+        elif self.__discovered_map[y][x]:
+          cell = ' \033[42m \033[0m '
+        else:
+          cell = ' \033[40m \033[0m '
+        row += cell + '│'
+      print(row)
+
+      # Print row separator if not the last row
+      if y != self.__rows - 1:
+        row_separator = '├' + '┼'.join(['─' * 3] * self.__columns) + '┤'
+        print(row_separator)
+
+    # Print the bottom border of the map
+    bottom_border = '└' + '┴'.join(['─' * 3] * self.__columns) + '┘'
+    print(bottom_border)

@@ -89,6 +89,7 @@ class Agent:
     self.__total_steps: int = total_steps
     self.__x: int = x
     self.__y: int = y
+    self.set_known(x, y)
 
   def get_name(self) -> str:
     """
@@ -149,7 +150,7 @@ class Agent:
       x (int): The x-coordinate of the cell.
       y (int): The y-coordinate of the cell.
     """
-    self.__known_map[x][y] = KnownCell([])
+    self.__known_map[y][x] = KnownCell([])
 
   def add_flag(self, x: int, y: int, flag: str) -> bool:
     """
@@ -165,7 +166,7 @@ class Agent:
     """
     if not self.is_known(x, y):
       return False
-    return self.__known_map[x][y].add_flag(flag)
+    return self.__known_map[y][x].add_flag(flag)
 
   def is_known(self, x: int, y: int) -> bool:
     """
@@ -178,9 +179,11 @@ class Agent:
     Returns:
       bool: True if the cell is known, False if it is not.
     """
-    if x < 0 or x >= len(self.__known_map):
+    if y < 0 or y >= len(self.__known_map):
       return False
-    return self.__known_map[x][y] is not None
+    if x < 0 or x >= len(self.__known_map[y]):
+      return False
+    return self.__known_map[y][x] is not None
 
   def update_position(self, x: int, y: int) -> None:
     """
@@ -247,7 +250,7 @@ class Agent:
     """
     self.__accumulated_movement_cost += cost
 
-  def get_total_steps(self) -> int:
+  def get_steps(self) -> int:
     """
     Returns the total number of steps the agent has taken.
 
@@ -256,7 +259,7 @@ class Agent:
     """
     return self.__total_steps
 
-  def increase_total_steps(self) -> None:
+  def increase_steps(self) -> None:
     """
     Increases the total number of steps the agent has taken.
     """

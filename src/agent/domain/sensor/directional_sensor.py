@@ -43,11 +43,13 @@ class DirectionalSensor(Sensor, ABC):
     pass_trough: bool = sensor_configuration.can_pass_trough()
     for i in range(1, sensor_configuration.get_radius() + 1):
       new_x, new_y = self.get_new_coordinates(x, y, i)
+      if agent.is_known(new_x, new_y):
+        continue
       obstacle: Optional[bool] = environment.is_obstacle_for(agent, new_x, new_y)
       if obstacle is None:
         return SensorResult.OUT_OF_BOUNDS
-      if obstacle and not pass_trough:
-        return SensorResult.HIT_OBSTACLE
       agent.set_known(new_x, new_y)
       environment.update_discovered_map(new_x, new_y, True)
+      if obstacle and not pass_trough:
+        return SensorResult.HIT_OBSTACLE
     return SensorResult.SUCCESS
