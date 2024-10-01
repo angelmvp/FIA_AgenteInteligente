@@ -26,6 +26,16 @@ class SensorRepository:
     """
     self.__sensors[sensor.get_identifier()] = sensor
 
+  def add_sensors(self, *sensors: Sensor):
+    """
+    Adds a list of sensors to the repository.
+
+    Args:
+      sensors (list[Sensor]): The sensors to add.
+    """
+    for sensor in sensors:
+      self.add_sensor(sensor)
+
   def get_sensor(self, identifier: str) -> Optional[Sensor]:
     """
     Retrieves a sensor by its identifier.

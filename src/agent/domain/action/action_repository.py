@@ -26,6 +26,16 @@ class ActionRepository:
     """
     self.__actions[action.get_identifier()] = action
 
+  def add_actions(self, *actions: Action):
+    """
+    Adds a list of actions to the repository.
+
+    Args:
+      actions (list[Action]): The actions to add.
+    """
+    for action in actions:
+      self.add_action(action)
+
   def get_action(self, identifier: str) -> Optional[Action]:
     """
     Retrieves an action by its identifier.

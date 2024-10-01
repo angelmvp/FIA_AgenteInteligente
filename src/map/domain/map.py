@@ -55,5 +55,8 @@ class Map:
         """
         Prints the grid to the console.
         """
+        print('Map:')
+        print(f'Rows: {self.__rows}')
+        print(f'Columns: {self.__columns}')
         for row in self.__grid:
             print(row)

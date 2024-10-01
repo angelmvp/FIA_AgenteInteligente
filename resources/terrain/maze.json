@@ -13,10 +13,10 @@
     "display_name": "Camino",
     "color": "#ffffff",
     "movement_costs": {
-      "human": "1",
-      "monkey": "1",
-      "octopus": "1",
-      "sasquatch": "1"
+      "human": 1,
+      "monkey": 1,
+      "octopus": 1,
+      "sasquatch": 1
     }
   }
 }

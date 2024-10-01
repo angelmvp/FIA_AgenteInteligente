@@ -3,7 +3,7 @@ from typing import Optional
 from enum import Enum
 
 from src.agent.domain.action.agent_action import ActionConfiguration
-from src.agent.domain.cell_agent import KnownCell
+from src.agent.domain.known_cell import KnownCell
 from src.agent.domain.sensor.sensor_configuration import SensorConfiguration
 
 

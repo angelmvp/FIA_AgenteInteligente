@@ -78,6 +78,19 @@ class Environment:
     """
     return self.__discovered_map
 
+  def is_discovered(self, x: int, y: int) -> bool:
+    """
+    Checks if a cell has been discovered.
+
+    Args:
+      x (int): The x-coordinate of the cell.
+      y (int): The y-coordinate of the cell.
+
+    Returns:
+      bool: True if the cell has been discovered, False otherwise.
+    """
+    return self.__discovered_map[x][y]
+
   def update_state(self, x: int, y: int, new_value: Cell):
     """
     Changes the state of the environment at a position and updates both the global and agents' maps.
@@ -106,15 +119,21 @@ class Environment:
       return None
     return cell.get_movement_cost_for(agent.get_name()) is None
 
-  # TODO: Implement the move_agent method
-  def move_agent(self, agent: Agent, new_position: Position):
+  def get_rows(self) -> int:
     """
-    Moves an agent in the environment and updates the discovered map based on what it explores.
+    Returns the number of rows in the environment.
 
-    Args:
-      agent (Agent): The agent to move.
-      new_position (Position): The new position for the agent.
+    Returns:
+      int: The number of rows.
     """
-    terrain_type: Cell = self.get_cell(new_position)
-    self.update_discovered_map(new_position, terrain_type)
-    agent.update_position(new_position)
+    return self.__rows
+
+  def get_columns(self) -> int:
+    """
+    Returns the number of columns in the environment.
+
+    Returns:
+      int: The number of columns.
+    """
+    return self.__columns
+
