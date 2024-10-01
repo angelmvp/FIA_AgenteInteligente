@@ -13,7 +13,7 @@ env/
 *.pyc
 *.pyo
 *.pyd
-__pycache__/
+__pycache__
 
 # Archivos de caché y logs
 *.log
