@@ -1,9 +1,11 @@
 import pygame as pg
 import sys
 import os
-from agente.seleccionarAgente import SeleccionarAgente
-from Sensores.Sensores import SeleccionarSensor
-from Mapa.Mapa import MapGame
+from front.agente.seleccionarAgente import SeleccionarAgente
+from front.Sensores.Sensores import SeleccionarSensor
+from front.Mapa.Mapa import MapGame
+from front.MapCreation.mapCreation import MapCreation
+from front.MapEdition.MapEdition import MapEdition
 pg.init()
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 700
@@ -22,7 +24,7 @@ pg.display.set_caption("Menu Principal del Juwego")
 
 class MainMenu:
     def __init__(self, game):
-        self.options = ["Cargar Mapa", "Seleccionar Agente", "Salir"]
+        self.options = ["Cargar Mapa", "Crear un nuevo Mapa", "Salir"]
         self.selected_option = 0
         self.title_font = pg.font.SysFont("comicsans", 70)
         self.font = pg.font.SysFont("comicsans", 50)
@@ -50,7 +52,7 @@ class MainMenu:
         if self.selected_option == 0:
             self.game.show_map_selection()
         elif self.selected_option == 1:
-            self.game.current_view = SeleccionarAgente(self.game.window_surface, self.game.manager)
+            self.game.create_map()
             print("Sekeccioad")
         elif self.selected_option == 2:
             pg.quit()
@@ -100,7 +102,10 @@ class RunMenu:
         self.sensor=None
     def show_map_selection(self):
         self.state = "map_selection"
-
+    def create_map(self):
+        print("mapa creado")
+        self.state="map_creation"
+        self.current_view=MapCreation(self.window_surface,self.manager)
     def draw_map_selection(self):
         screen.fill(BLACK)
         title_font = pg.font.SysFont("comicsans", 70)
@@ -173,6 +178,23 @@ class RunMenu:
                         elif self.state=="sensors":
                             self.current_view=None
                             self.current_view=SeleccionarSensor(self.window_surface,self.manager)
+                if self.state=="map_creation":
+                    self.current_view.process_events(event)
+                    self.action_map=self.current_view.get_action()
+                    if self.action_map is not None:
+                        self.state=self.action_map
+                        if self.state=="back":
+                            self.current_view=None
+                            self.state="menu"
+                        elif self.state=="advance":
+                            columns=self.current_view.get_columns()
+                            rows=self.current_view.get_rows()
+                            print(rows)
+                            print(columns)
+                            self.state="map_edition"
+                            self.current_view=None
+                            self.current_view = MapEdition(self.window_surface,self.manager,0,rows,columns)
+                            print("avanzar")
                 pg.display.flip()
             if self.current_view:
                 self.current_view.update(time_delta)
@@ -197,6 +219,14 @@ class RunMenu:
             elif self.state=="map_game":
                 self.current_view.draw()
                 self.current_view.process_events(event) 
+                self.manager.process_events(event)
+            elif self.state=="map_creation":
+                self.current_view.draw()
+                self.current_view.process_events(event)
+                self.manager.process_events(event)
+            elif self.state=="map_edition":
+                self.current_view.draw()
+                self.current_view.process_events(event)
                 self.manager.process_events(event)
         pg.quit()
         sys.exit()

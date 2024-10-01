@@ -15,28 +15,28 @@
     "#human_button": {  
             "images": {
                 "normal_image": {
-                    "path": "agente/img/human.png"
+                    "path": "front/agente/img/human.png"
                 }
             }            
     },
     "#monkey_button":{
         "images":{
             "normal_image":{
-                "path":"agente/img/monkey.png"
+                "path":"front/agente/img/monkey.png"
             }
         }
     },
     "#octopus_button":{
         "images":{
             "normal_image":{
-                "path":"agente/img/octopus.png"
+                "path":"front/agente/img/octopus.png"
             }
         }
     },
     "#sasquatch_button":{
         "images":{
             "normal_image":{
-                "path":"agente/img/sasquatch.png"
+                "path":"front/agente/img/sasquatch.png"
             }
         }
     }

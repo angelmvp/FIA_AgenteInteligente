@@ -100,19 +100,19 @@ class MapGame(View):
             manager=self.manager,container=self.menu_info_game,object_id=ObjectID(class_id='@label_info')) 
         
         rect_label_agent_title=pygame.Rect(0,4*LABEL_HEIGHT+5,MENU_WIDTH,LABEL_HEIGHT)
-        self.label_terrain_type=pygame_gui.elements.UILabel(relative_rect=rect_label_agent_title,text=('AGENTE'),
+        self.label_agent_title=pygame_gui.elements.UILabel(relative_rect=rect_label_agent_title,text=('AGENTE'),
             manager=self.manager,container=self.menu_info_game,object_id=ObjectID(class_id='@label_info_title')) 
 
         rect_label_position=pygame.Rect(0,5*LABEL_HEIGHT+5,MENU_WIDTH,LABEL_HEIGHT)
-        self.label_terrain_type=pygame_gui.elements.UILabel(relative_rect=rect_label_position,text=('Posicion'),
+        self.label_position=pygame_gui.elements.UILabel(relative_rect=rect_label_position,text=('Posicion'),
             manager=self.manager,container=self.menu_info_game,object_id=ObjectID(class_id='@label_info_title'))
         
         rect_label_movements=pygame.Rect(0,6*LABEL_HEIGHT+5,MENU_WIDTH,LABEL_HEIGHT)
-        self.label_terrain_type=pygame_gui.elements.UILabel(relative_rect=rect_label_movements,text=('MOVIMIENTOS'),
+        self.label_movements=pygame_gui.elements.UILabel(relative_rect=rect_label_movements,text=('MOVIMIENTOS'),
             manager=self.manager,container=self.menu_info_game,object_id=ObjectID(class_id='@label_info_title'))
         
         rect_label_total_cost=pygame.Rect(0,7*LABEL_HEIGHT+5,MENU_WIDTH,LABEL_HEIGHT)
-        self.label_terrain_type=pygame_gui.elements.UILabel(relative_rect=rect_label_total_cost,text=('COSTO ACUMULADO'),
+        self.label_total_cost=pygame_gui.elements.UILabel(relative_rect=rect_label_total_cost,text=('COSTO ACUMULADO'),
             manager=self.manager,container=self.menu_info_game,object_id=ObjectID(class_id='@label_info_title'))
 
 
@@ -215,5 +215,14 @@ class MapGame(View):
         self.agent_selection_button.kill()
         self.actions_button.kill()
         self.sensors_button.kill()
+        self.menu_info_game.kill()
         self.label_celda_title.kill()
+        self.label_terrain_type.kill()
+        self.label_cost.kill()
+        self.label_mark.kill()
+        self.label_position.kill()
+        self.label_agent_title.kill()
+        self.label_movements.kill()
+        self.label_total_cost.kill()
+
 

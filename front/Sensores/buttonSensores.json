@@ -28,28 +28,28 @@
     "#sensor1_button": {  
             "images": {
                 "normal_image": {
-                    "path": "Sensores/img/sensor1_1celda.png"
+                    "path": "front/Sensores/img/sensor1_1celda.png"
                 }
             }            
     },
     "#sensor2_button":{
         "images":{
             "normal_image":{
-                "path":"Sensores/img/sensor2_4celdas.png"
+                "path":"front/Sensores/img/sensor2_4celdas.png"
             }
         }
     },
     "#sensor3_button":{
         "images":{
             "normal_image":{
-                "path":"Sensores/img/sensor3_3x3celdas.png"
+                "path":"front/Sensores/img/sensor3_3x3celdas.png"
             }
         }
     },
     "#sensor4_button":{
         "images":{
             "normal_image":{
-                "path":"Sensores/img/sensor2_4celdas.png"
+                "path":"front/Sensores/img/sensor2_4celdas.png"
             }
         }
     }
