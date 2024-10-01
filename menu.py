@@ -201,14 +201,14 @@ class Game:
     def draw_menu_agent(self):
         pg.draw.rect(screen,WHITE,(MAP_WIDTH,0,MENU_WIDTH,SCREEN_HEIGHT))
         font = pg.font.SysFont("comicsans", 20)
-        label=font.render("Aqui va el menu para seleccionar agente, inicio y final del juego",True,BLACK)
+        label=font.render("Aquí va el menu para seleccionar agente, inicio y final del juego",True,BLACK)
         screen.blit(label,(MAP_WIDTH+10,50))
         label2=font.render("Presione backspace para regresar ",True,BLACK)
         screen.blit(label2,(MAP_WIDTH+10,90))
     def draw_game_running(self):
         pg.draw.rect(screen,CYAN,(MAP_WIDTH,0,MENU_WIDTH,SCREEN_HEIGHT))
         font = pg.font.SysFont("comicsans", 20)
-        label=font.render("Aqui Se supone ya entroe el juego en accion ",True,BLACK)
+        label=font.render("Aquí Se supone ya entroe el juego en acción ",True,BLACK)
         screen.blit(label,(MAP_WIDTH+10,50))
         label2=font.render("Presione r para cargar el agente y reinicar el juego",True,BLACK)
         screen.blit(label2,(MAP_WIDTH+10,90))

@@ -13,21 +13,21 @@ class MoverAgenteCasoDeUso(ControladorAgente):
         self.mapa = mapa
 
     def mover(self, agente, direccion):
-        nueva_x, nueva_y = agente.x, agente.y
+        nueva_x, nueva_y = agente.__x, agente.__y
 
         if direccion == "arriba":
-            nueva_x = max(0, agente.x - 1)
+            nueva_x = max(0, agente.__x - 1)
         elif direccion == "abajo":
-            nueva_x = min(len(self.mapa.grid) - 1, agente.x + 1)
+            nueva_x = min(len(self.mapa.__grid) - 1, agente.__x + 1)
         elif direccion == "izquierda":
-            nueva_y = max(0, agente.y - 1)
+            nueva_y = max(0, agente.__y - 1)
         elif direccion == "derecha":
-            nueva_y = min(len(self.mapa.grid[0]) - 1, agente.y + 1)
+            nueva_y = min(len(self.mapa.__grid[0]) - 1, agente.__y + 1)
 
         # Verificamos si la nueva posición es transitable
         terreno = self.mapa.obtener_terreno(nueva_x, nueva_y)
         if terreno.tipo != "Montaña":
-            agente.x, agente.y = nueva_x, nueva_y
+            agente.__x, agente.__y = nueva_x, nueva_y
             agente.costo_total += terreno.costo
             return True
         else:
@@ -57,7 +57,7 @@ class ControladorTeclado:
         if direccion:
             exito = self.caso_de_uso.mover(self.agente, direccion)
             if exito:
-                print(f"Agente movido a ({self.agente.x}, {self.agente.y}), costo acumulado: {self.agente.costo_total}")
+                print(f"Agente movido a ({self.agente.__x}, {self.agente.__y}), costo acumulado: {self.agente.costo_total}")
             else:
                 print(f"No se puede mover, obstáculo encontrado.")
             self.render.actualizar_posicion(self.agente)

@@ -8,8 +8,8 @@ class SistemaRenderizado:
         self.cell_size = cell_size
 
     def mostrar_mapa(self, mapa):
-        for i in range(len(mapa.grid)):
-            for j in range(len(mapa.grid[0])):
+        for i in range(len(mapa.__grid)):
+            for j in range(len(mapa.__grid[0])):
                 terreno = mapa.obtener_terreno(i, j)
                 color = self.obtener_color(terreno.tipo)
                 self.canvas.create_rectangle(j * self.cell_size, i * self.cell_size,
@@ -27,6 +27,6 @@ class SistemaRenderizado:
         return "white"
 
     def actualizar_posicion(self, agente):
-        x = agente.x * self.cell_size
-        y = agente.y * self.cell_size
+        x = agente.__x * self.cell_size
+        y = agente.__y * self.cell_size
         self.canvas.create_oval(y, x, y + self.cell_size, x + self.cell_size, fill="red")

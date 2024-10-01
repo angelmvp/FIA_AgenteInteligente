@@ -30,7 +30,7 @@ class Casilla:
     def visitada(self):
         self.visitada=True
     def obtenerCosto(self,objeto):
-        costo=self.costo.get(objeto,None)
+        costo=self.costo.get_by_code(objeto, None)
 
 class Agente:
     def __init__(self,tipo,posicion,mapa):

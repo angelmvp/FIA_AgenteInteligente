@@ -4,22 +4,22 @@ class Position:
         self.y = y
 
     def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
+        return self.x == other.__x and self.y == other.__y
 
     def __hash__(self):
         return hash((self.x, self.y))
 
     def __str__(self):
-        return f"({self.x}, {self.y})"
+        return f'({self.x}, {self.y})'
 
     def __repr__(self):
-        return f"Position({self.x}, {self.y})"
+        return f'Position({self.x}, {self.y})'
 
     def __add__(self, other):
-        return Position(self.x + other.x, self.y + other.y)
+        return Position(self.x + other.__x, self.y + other.__y)
 
     def __sub__(self, other):
-        return Position(self.x - other.x, self.y - other.y)
+        return Position(self.x - other.__x, self.y - other.__y)
 
     def __mul__(self, other):
         return Position(self.x * other, self.y * other)
@@ -34,16 +34,16 @@ class Position:
         return Position(self.x % other, self.y % other)
 
     def __lt__(self, other):
-        return self.x < other.x or (self.x == other.x and self.y < other.y)
+        return self.x < other.__x or (self.x == other.__x and self.y < other.__y)
 
     def __le__(self, other):
-        return self.x <= other.x or (self.x == other.x and self.y <= other.y)
+        return self.x <= other.__x or (self.x == other.__x and self.y <= other.__y)
 
     def __gt__(self, other):
-        return self.x > other.x or (self.x == other.x and self.y > other.y)
+        return self.x > other.__x or (self.x == other.__x and self.y > other.__y)
 
     def __ge__(self, other):
-        return self.x >= other.x or (self.x == other.x and self.y >= other.y)
+        return self.x >= other.__x or (self.x == other.__x and self.y >= other.__y)
 
     def __neg__(self):
         return Position(-self.x, -self.y)

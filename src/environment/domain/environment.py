@@ -1,77 +1,120 @@
-from src.agent.domain.agent import Direction, Agent
-from src.environment.domain.cell import Cell
+from typing import Optional
+
+from src.agent.domain.agent import Agent
+from src.environment.domain.cell.cell import Cell
 from src.position.domain.position import Position
 
 
 class Environment:
-    def __init__(self, grid: list[list[Cell]]):
-        self.grid: list[list[Cell]] = grid
-        self.discovered_map: list[list[Cell or None]] = [[None for _ in row] for row in grid]
-        self.agents: list[Agent] = []
-        self.subscribers: list[Agent] = []
+  """
+  Represents the environment in which agents operate.
 
-    def add_agent(self, agent: Agent):
-        """
-        Añadir un agente al entorno.
-        """
-        self.agents.append(agent)
-        self.subscribers.append(agent)
+  Attributes:
+    __agents (list[Agent]): The list of agents in the environment.
+    __discovered_map (list[list[bool]]): The map of discovered cells.
+    __grid (list[list[Cell]]): The grid representing the environment.
+    __rows (int): The number of rows in the environment.
+    __columns (int): The number of columns in the environment.
+  """
 
-    def get_cell(self, position: Position) -> Cell:
-        """
-        Devuelve el estado del terreno en una posición específica.
-        """
-        return self.grid[position.x][position.y]
+  def __init__(self, agents: list[Agent], discovered_map: list[list[bool]], grid: list[list[Cell]], rows: int, columns: int):
+    """
+    Initializes an Environment instance.
 
-    def update_discovered_map(self, position: Position, value: Cell or None):
-        """
-        Actualiza el mapa global descubierto en una posición específica.
-        """
-        self.discovered_map[position.x][position.y] = value
+    Args:
+      agents (list[Agent]): The list of agents in the environment.
+      discovered_map (list[list[bool]]): The map of discovered cells.
+      grid (list[list[Cell]]): The grid representing the environment.
+      rows (int): The number of rows in the environment.
+      columns (int): The number of columns in the environment
+    """
+    self.__agents: list[Agent] = agents
+    self.__discovered_map: list[list[bool]] = discovered_map
+    self.__grid: list[list[Cell]] = grid
+    self.__rows: int = rows
+    self.__columns: int = columns
 
-    def get_discovered_map(self) -> list[list[Cell or None]]:
-        """
-        Devuelve el mapa global descubierto.
-        """
-        return self.discovered_map
+  def add_agent(self, agent: Agent):
+    """
+    Adds an agent to the environment.
 
-    def update_state(self, position: Position, new_value: Cell):
-        """
-        Cambia el estado del entorno en una posición y actualiza tanto el mapa global como el de los agentes.
-        """
-        self.grid[position.x][position.y] = new_value
-        self.update_discovered_map(position, new_value)
-        self.notify_agents({position: new_value})
+    Args:
+      agent (Agent): The agent to be added.
+    """
+    self.__agents.append(agent)
 
-    def notify_agents(self, update_info: dict[Position, Cell]):
-        """
-        Notifica a los agentes suscritos sobre cambios en el entorno.
-        """
-        for agent in self.subscribers:
-            agent.receive_update(update_info)
+  def get_cell(self, x: int, y: int) -> Optional[Cell]:
+    """
+    Returns the state of the terrain at a specific position.
 
-    def move_agent(self, agent: Agent, new_position: Position):
-        """
-        Mueve al agente en el entorno y actualiza el mapa global descubierto según lo que explore.
-        """
-        terrain_type = self.get_cell(new_position)
-        self.update_discovered_map(new_position, terrain_type)
-        agent.update_position(new_position)
+    Args:
+      x (int): The x-coordinate of the position.
+      y (int): The y-coordinate of the position.
 
-    def get_adjacent_cell(self, position: Position, direction: Direction) -> Position:
-        """
-        Obtiene la posición adyacente a una posición y dirección dadas.
-        :param position: La posición actual.
-        :param direction: La dirección en la que se desea mover.
-        :return: La posición adyacente.
-        """
-        x, y = position.x, position.y
-        if direction == 'up':
-            return Position(x - 1, y)
-        if direction == 'down':
-            return Position(x + 1, y)
-        if direction == 'left':
-            return Position(x, y - 1)
-        if direction == 'right':
-            return Position(x, y + 1)
-        raise ValueError("Dirección inválida.")
+    Returns:
+      Cell: The cell at the specified position.
+    """
+    if x < 0 or x >= self.__rows or y < 0 or y >= self.__columns:
+      return None
+    return self.__grid[x][y]
+
+  def update_discovered_map(self, x: int, y: int, value: bool):
+    """
+    Updates the discovered map at a specific position.
+
+    Args:
+      x (int): The x-coordinate of the position to update.
+      y (int): The y-coordinate of the position to update.
+      value (bool): The new value for the position.
+    """
+    self.__discovered_map[x][y] = value
+
+  def get_discovered_map(self) -> list[list[bool]]:
+    """
+    Returns the discovered map.
+
+    Returns:
+      list[list[bool]]: The discovered map.
+    """
+    return self.__discovered_map
+
+  def update_state(self, x: int, y: int, new_value: Cell):
+    """
+    Changes the state of the environment at a position and updates both the global and agents' maps.
+
+    Args:
+      x (int): The x-coordinate of the position to update.
+      y (int): The y-coordinate of the position to update.
+      new_value (Cell): The new value for the position.
+    """
+    self.__grid[x][y] = new_value
+
+  def is_obstacle_for(self, agent: Agent, x: int, y: int) -> Optional[bool]:
+    """
+    Checks if a cell is an obstacle for an agent.
+
+    Args:
+      agent (Agent): The agent to check the cell for.
+      x (int): The x-coordinate of the cell.
+      y (int): The y-coordinate of the cell.
+
+    Returns:
+      bool: True if the cell is an obstacle for the agent, False otherwise.
+    """
+    cell: Optional[Cell] = self.get_cell(x, y)
+    if cell is None:
+      return None
+    return cell.get_movement_cost_for(agent.get_name()) is None
+
+  # TODO: Implement the move_agent method
+  def move_agent(self, agent: Agent, new_position: Position):
+    """
+    Moves an agent in the environment and updates the discovered map based on what it explores.
+
+    Args:
+      agent (Agent): The agent to move.
+      new_position (Position): The new position for the agent.
+    """
+    terrain_type: Cell = self.get_cell(new_position)
+    self.update_discovered_map(new_position, terrain_type)
+    agent.update_position(new_position)

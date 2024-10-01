@@ -1,22 +1,69 @@
+from typing import Optional
+
+
 class Terrain:
-    """Entidad que representa un tipo de terreno en el mapa."""
+    """Represents a type of terrain on the environment.
 
-    def __init__(self, display_name: str, color: str, movement_costs: dict[str, int]):
-        self.display_name = display_name
-        self.color = color
-        self.movement_costs = movement_costs
+    Attributes:
+        __code (int): The code associated with the terrain.
+        __color (str): The color associated with the terrain.
+        __display_name (str): The name of the terrain.
+        __movement_costs_by_agent (dict[str, Optional[int]]): A dictionary mapping the cost of movement for each type of agent.
+    """
 
-    def get_movement_cost(self, movement_type: str) -> int or None:
-        """
-        Retorna el costo de movimiento para un tipo de movimiento.
+    def __init__(self, code: int, color: str, display_name: str, movement_costs_by_agent: dict[str, Optional[int]]):
+        """Initializes a Terrain instance.
 
         Args:
-            movement_type (str): Tipo de movimiento.
+            code (int): The code associated with the terrain.
+            display_name (str): The name of the terrain.
+            color (str): The color associated with the terrain.
+            movement_costs_by_agent (dict[str, Optional[int]]): A dictionary mapping the cost of movement for each type of agent.
+        """
+        self.__code: int = code
+        self.__color: str = color
+        self.__display_name: str = display_name
+        self.__movement_costs_by_agent: dict[str, Optional[int]] = movement_costs_by_agent
+
+    def get_code(self) -> int:
+        """Returns the code associated with the terrain.
 
         Returns:
-            int or None: Costo de movimiento.
+            int: The code associated with the terrain.
         """
-        return self.movement_costs.get(movement_type)
+        return self.__code
+
+    def get_color(self) -> str:
+        """Returns the color associated with the terrain.
+
+        Returns:
+            str: The color associated with the terrain.
+        """
+        return self.__color
+
+    def get_display_name(self) -> str:
+        """Returns the name of the terrain.
+
+        Returns:
+            str: The name of the terrain.
+        """
+        return self.__display_name
+
+    def get_movement_cost(self, agent_name: str) -> Optional[int]:
+        """Returns the movement cost for a given type of agent.
+
+        Args:
+            agent_name (str): The name of the agent.
+
+        Returns:
+            int or None: The movement cost for the given agent, or None if the agent cannot traverse the terrain.
+        """
+        return self.__movement_costs_by_agent.get(agent_name)
 
     def __str__(self):
-        return f"Terrain(display_name={self.display_name}, color={self.color}, movement_costs={self.movement_costs})"
+        """Returns a string representation of the Terrain instance.
+
+        Returns:
+            str: A string representation of the Terrain instance.
+        """
+        return f'Terrain {self.__display_name} (code: {self.__code}, color: {self.__color})'
