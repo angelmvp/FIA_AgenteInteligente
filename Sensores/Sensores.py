@@ -36,14 +36,13 @@ class SeleccionarSensor(View):
         self.PADDING_IMG = 10
         self.BUTTON_WIDTH = 150
         self.BUTTON_HEIGHT = self.TITLE_HEIGHT // 2
-        
-        # Fondo
+
         self.background = pygame.Surface((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         self.background.fill(pygame.Color('#000000'))
 
         # Panel del encabezado
         panel_header_rect = pygame.Rect(0, 0, self.SCREEN_WIDTH, self.TITLE_HEIGHT)
-        panel_header = pygame_gui.elements.UIPanel(relative_rect=panel_header_rect,
+        self.panel_header = pygame_gui.elements.UIPanel(relative_rect=panel_header_rect,
                                                    manager=self.manager,
                                                    object_id=ObjectID(class_id='@panel_header'))
 
@@ -52,7 +51,7 @@ class SeleccionarSensor(View):
         self.button_back = pygame_gui.elements.UIButton(relative_rect=button_back_rect,
                                                         text="Regresar",
                                                         manager=self.manager,
-                                                        container=panel_header,
+                                                        container=self.panel_header,
                                                         object_id=ObjectID(class_id='@buttons_navigation'))
         # Título
         label_title_rect = pygame.Rect(self.SCREEN_WIDTH // 4, self.TITLE_HEIGHT // 4,
@@ -60,7 +59,7 @@ class SeleccionarSensor(View):
         self.label_title_map = pygame_gui.elements.UILabel(relative_rect=label_title_rect,
                                                             text='SELECCIONAR TIPO DE SENSOR',
                                                             manager=self.manager,
-                                                            container=panel_header,
+                                                            container=self.panel_header,
                                                             object_id=ObjectID(class_id='@title', object_id='#title_map_modified'))
 
         # Contenedor para los botones y las etiquetas
@@ -125,7 +124,7 @@ class SeleccionarSensor(View):
             relative_rect=pygame.Rect(self.PADDING_IMG, (self.SCREEN_HEIGHT - self.TITLE_HEIGHT) // 2 + self.IMAGE_HEIGHT,
                                        self.IMAGE_WIDTH - self.PADDING_IMG,
                                        self.BUTTON_HEIGHT // 2),
-            text='Pulpo',
+            text='Otro sensor',
             manager=self.manager,
             container=self.menu_container_img,
             object_id=ObjectID(class_id='@sensor_label')
@@ -146,7 +145,7 @@ class SeleccionarSensor(View):
             relative_rect=pygame.Rect(self.SCREEN_WIDTH // 2, (self.SCREEN_HEIGHT - self.TITLE_HEIGHT) // 2 + self.IMAGE_HEIGHT,
                                        self.IMAGE_WIDTH - self.PADDING_IMG,
                                        self.BUTTON_HEIGHT // 2),
-            text='Sasquatch',
+            text='Otro Sensor',
             manager=self.manager,
             container=self.menu_container_img,
             object_id=ObjectID(class_id='@sensor_label')
@@ -156,6 +155,7 @@ class SeleccionarSensor(View):
         advance=False
         back=False
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
+            print("dalkfkal")
             if event.ui_element ==self.button_back:
                 print('Retroceder')
                 back=True
@@ -175,19 +175,32 @@ class SeleccionarSensor(View):
                 print('Sensor 4 seleccionado')
                 self.sensor="sensor4"
                 advance=True
-        if advance==True:
-            return self.sensor
-        if back==True:
-            return "back"
+        # if advance==True:
+        #     return self.sensor
+        # if back==True:
+        #     return "back"
      
     def update(self, time_delta):
         self.manager.update(time_delta)
-
     def draw(self):
         self.window_surface.fill(pygame.Color('#000000'))
         self.manager.draw_ui(self.window_surface)
         pygame.display.update()
     def get_sensor(self):
         if self.sensor is not None:
+            self.clear_ui()
             print(self.sensor)
             return self.sensor
+    def clear_ui(self):
+        self.panel_header.kill()
+        self.button_back.kill()
+        self.label_title_map.kill()
+        self.menu_container_img.kill()
+        self.sensor1_button.kill()
+        self.sensor1_label.kill()
+        self.sensor2_button.kill()
+        self.sensor2_label.kill()
+        self.sensor3_button.kill()
+        self.sensor3_label.kill()
+        self.sensor4_button.kill()
+        self.sensor4_label.kill()

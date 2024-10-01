@@ -15,9 +15,9 @@
     "@img_button":{
         "colours":{
                 "normal_bg":"Cyan",
-                "hovered_bg": "Cyan",
+                "hovered_bg": "Red",
                 "disabled_bg": "Green",
-                "selected_bg": "Green",
+                "selected_bg": "Red",
                 "normal_border": "Cyan",
                 "hovered_border": "Cyan",
                 "disabled_border": "Cyan",
@@ -49,7 +49,7 @@
     "#sensor4_button":{
         "images":{
             "normal_image":{
-                "path":"Sensores/img/sensor1_1celda.png"
+                "path":"Sensores/img/sensor2_4celdas.png"
             }
         }
     }

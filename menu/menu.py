@@ -3,6 +3,7 @@ import sys
 import os
 from agente.seleccionarAgente import SeleccionarAgente
 from Sensores.Sensores import SeleccionarSensor
+from Mapa.Mapa import MapGame
 pg.init()
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 700
@@ -95,7 +96,8 @@ class RunMenu:
         self.state = "menu"  # Estado inicial es el menú principal
         self.clock = pg.time.Clock()  # Asegúrate de usar clock en RunMenu
         self.current_view = None  
-
+        self.agent=None
+        self.sensor=None
     def show_map_selection(self):
         self.state = "map_selection"
 
@@ -113,8 +115,8 @@ class RunMenu:
                 label = font.render(map_name, True, WHITE)
             screen.blit(label, (SCREEN_WIDTH // 2 - label.get_width() // 2, 250 + i * 60))
 
-    def load_map_data(self):  # Cambiado el nombre de la función
-        self.load_map.load_selected_map()  # Utiliza la instancia de LoadMap
+    def load_map_data(self):  
+        self.load_map.load_selected_map()
         self.map_data = self.load_map.get_map()
 
     def run(self):
@@ -142,20 +144,35 @@ class RunMenu:
                         elif event.key == pg.K_RETURN:
                             self.load_map.load_selected_map()
                             self.map_data = self.load_map.get_map()
-                            self.state = "seleccion_agente"
+                            self.state = "agent_selection"
                             self.current_view = SeleccionarAgente(self.window_surface, self.manager)
 
                 # También procesamos eventos de pygame_gui
-                if self.state=="seleccion_agente" :
+                if self.state=="agent_selection" :
                     self.current_view.process_events(event)
                     self.agent=self.current_view.get_agent()
                     if self.agent is not None:
-                        self.state="sensors"
+                        self.state="map_game"
                         self.current_view=None
-                        self.current_view=SeleccionarSensor(self.window_surface,self.manager)
+                        self.current_view=MapGame(self.window_surface,self.manager)
                 if self.state=="sensors":
                     self.current_view.process_events(event)
                     self.sensor=self.current_view.get_sensor()
+                    if self.sensor is not None:
+                        self.state="map_game"
+                        self.current_view=None
+                        self.current_view=MapGame(self.window_surface,self.manager)
+                if self.state=="map_game":
+                    self.current_view.process_events(event)
+                    self.action_map=self.current_view.get_action()
+                    if self.action_map is not None:
+                        self.state=self.action_map
+                        if self.state=="agent_selection":
+                            self.current_view=None
+                            self.current_view=SeleccionarAgente(self.window_surface,self.manager)
+                        elif self.state=="sensors":
+                            self.current_view=None
+                            self.current_view=SeleccionarSensor(self.window_surface,self.manager)
                 pg.display.flip()
             if self.current_view:
                 self.current_view.update(time_delta)
@@ -165,14 +182,21 @@ class RunMenu:
                 self.main_menu.draw()
             elif self.state == "map_selection":
                 self.draw_map_selection()
-            elif self.state == "seleccion_agente":
+            elif self.state == "agent_selection":
                 self.current_view.draw()
                 self.current_view.process_events(event) 
                 self.manager.process_events(event)
             elif self.state=="game_running":
                 self.current_view.draw()
+                self.current_view.process_events(event) 
+                self.manager.process_events(event)
             elif self.state=="sensors":
                 self.current_view.draw()
-        
+                self.current_view.process_events(event) 
+                self.manager.process_events(event)
+            elif self.state=="map_game":
+                self.current_view.draw()
+                self.current_view.process_events(event) 
+                self.manager.process_events(event)
         pg.quit()
         sys.exit()

@@ -170,10 +170,10 @@ class SeleccionarAgente(View):  # Hereda de la clase View
 
         
     # Opción 1: Resetear el texto de los botones y labels
-        self.human_button.set_text('')
-        self.monkey_button.set_text('')
-        self.octopus_button.set_text('')
-        self.sasquatch_button.set_text('')
+        # self.human_button.set_text('')
+        # self.monkey_button.set_text('')
+        # self.octopus_button.set_text('')
+        # self.sasquatch_button.set_text('')
 
 
         # Opción 2: Eliminar completamente los botones y labels
