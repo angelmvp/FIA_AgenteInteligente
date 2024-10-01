@@ -2,13 +2,14 @@ from typing import Optional
 
 from enum import Enum
 
-from src.agent.domain.action.agent_action import ActionConfiguration
+from src.agent.domain.action.action_configuration import ActionConfiguration
 from src.agent.domain.known_cell import KnownCell
 from src.agent.domain.sensor.sensor_configuration import SensorConfiguration
 
 
 class Direction(Enum):
-  """Enum representing possible movement directions.
+  """
+  Enum representing possible movement directions.
   """
   UP = 'up'
   DOWN = 'down'
@@ -58,7 +59,7 @@ class Agent:
     __direction (Optional[Direction]): The direction the agent is facing.
     __known_map (list[list[KnownCell]]): The map of known cells.
     __name (str): The name of the agent.
-    __sensors (dict[str, Sensor]): The list of sensors the agent has.
+    __sensors (dict[str, SensorConfiguration]): The list of sensors the agent has.
     __total_steps (int): The total number of steps the agent has taken.
     __x (int): The x-coordinate of the agent's position.
     __y (int): The y-coordinate of the agent's position.
@@ -70,11 +71,11 @@ class Agent:
 
     Args:
       accumulated_movement_cost (int): The accumulated cost of the agent.
-      actions (list[ActionConfiguration]): The list of actions the agent can perform.
+      actions (dict[str, ActionConfiguration]): The list of actions the agent can perform.
       direction (Optional[Direction]): The direction the agent is facing.
-      known_map (list[list[KnownCell]]): The map of known cells.
+      known_map (list[list[Optional[KnownCell]]]): The map of known cells.
       name (str): The name of the agent.
-      sensors (list[Sensor]): The list of sensors the agent has.
+      sensors (dict[str, SensorConfiguration]): The list of sensors the agent has.
       total_steps (int): The total number of steps the agent has taken.
       x (int): The x-coordinate of the agent's position.
       y (int): The y-coordinate of the agent's position.
@@ -103,19 +104,19 @@ class Agent:
     Adds an action to the agent.
 
     Args:
-      action (Action): The action to be added.
+      action (ActionConfiguration): The action to be added.
     """
     self.__actions[action.get_identifier()] = action
 
   def get_action(self, identifier: str) -> Optional[ActionConfiguration]:
     """
-    Returns the action at the given index.
+    Returns the action with the given identifier.
 
     Args:
       identifier (str): The identifier of the action.
 
     Returns:
-      Action: The action.
+      Optional[ActionConfiguration]: The action, or None if not found.
     """
     return self.__actions.get(identifier, None)
 
@@ -124,19 +125,19 @@ class Agent:
     Adds a sensor to the agent.
 
     Args:
-      sensor (Sensor): The sensor to be added.
+      sensor (SensorConfiguration): The sensor to be added.
     """
     self.__sensors[sensor.get_identifier()] = sensor
 
   def get_sensor(self, identifier: str) -> Optional[SensorConfiguration]:
     """
-    Returns the sensor at the given index.
+    Returns the sensor with the given identifier.
 
     Args:
       identifier (str): The identifier of the sensor.
 
     Returns:
-      Sensor: The sensor.
+      Optional[SensorConfiguration]: The sensor, or None if not found.
     """
     return self.__sensors.get(identifier, None)
 
@@ -215,7 +216,7 @@ class Agent:
     Returns the direction the agent is facing.
 
     Returns:
-      Direction: The direction.
+      Optional[Direction]: The direction.
     """
     return self.__direction
 
@@ -224,7 +225,7 @@ class Agent:
     Sets the direction the agent is facing.
 
     Args:
-      direction (Direction): The new direction.
+      direction (Optional[Direction]): The new direction.
     """
     self.__direction = direction
 

@@ -10,10 +10,15 @@ class SensorConfiguration:
 
   def __init__(self, identifier: str, pass_trough: bool, radius: int):
     """
-    Initializes an AgentSensor instance.
+    Initializes a SensorConfiguration instance.
 
     Args:
       identifier (str): The unique identifier for the sensor.
+      pass_trough (bool): A flag indicating if the sensor can pass through obstacles.
+      radius (int): The radius of the sensor.
+
+    Raises:
+      ValueError: If the radius is less than 1.
     """
     if radius < 1:
       raise ValueError('The radius must be greater than 0')

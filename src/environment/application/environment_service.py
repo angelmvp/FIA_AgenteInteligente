@@ -9,21 +9,27 @@ from src.map.domain.map import Map
 
 class EnvironmentService:
   """
-  Provides services for the Environment class.
+  Provides services for managing and interacting with the Environment class.
 
   Attributes:
-      __terrain_repository (TerrainRepository): The terrain repository.
+    __terrain_repository (TerrainRepository): Repository for retrieving terrain information.
   """
 
   def __init__(self, terrain_repository: TerrainRepository):
+    """
+    Initializes an EnvironmentService instance.
+
+    Args:
+      terrain_repository (TerrainRepository): Repository for retrieving terrain information.
+    """
     self.__terrain_repository = terrain_repository
 
   def print_discovered_map(self, environment: Environment):
     """
-    Prints the environment.
+    Prints the discovered parts of the environment.
 
     Args:
-        environment (Environment): An instance of the Environment class.
+      environment (Environment): The environment to be printed.
     """
     for column in range(environment.get_columns()):
       for row in range(environment.get_rows()):
@@ -35,13 +41,16 @@ class EnvironmentService:
 
   def create_cells_from_map(self, map: Map) -> list[list[Cell]]:
     """
-    Creates cells from a map.
+    Creates a grid of cells from a map.
 
     Args:
-        map (Map): An instance of the Map class.
+      map (Map): The map from which to create cells.
 
     Returns:
-        list: A list of cells.
+      list[list[Cell]]: A 2D list of cells created from the map.
+
+    Raises:
+      ValueError: If a terrain code in the map does not correspond to any terrain in the repository.
     """
     cells: list[list[Cell]] = []
     for row in range(map.get_rows()):
@@ -55,13 +64,13 @@ class EnvironmentService:
 
   def create_environment_from_map(self, map: Map) -> Environment:
     """
-    Creates an environment from a map.
+    Creates an environment instance from a map.
 
     Args:
-        map (Map): An instance of the Map class.
+      map (Map): The map from which to create the environment.
 
     Returns:
-        Environment: An instance of the Environment class.
+      Environment: The created environment instance.
     """
     cells: list[list[Cell]] = self.create_cells_from_map(map)
     discovered_map: list[list[bool]] = [[False for _ in range(map.get_rows())] for _ in range(map.get_columns())]

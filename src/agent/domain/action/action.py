@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from enum import Enum
 
-from src.agent.domain.action.agent_action import ActionConfiguration
+from src.agent.domain.action.action_configuration import ActionConfiguration
 from src.agent.domain.agent import Agent
 from src.environment.domain.environment import Environment
 

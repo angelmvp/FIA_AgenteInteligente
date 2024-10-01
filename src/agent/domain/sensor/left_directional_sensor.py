@@ -12,7 +12,7 @@ class LeftDirectionalSensor(DirectionalSensor):
 
   def __init__(self):
     """
-    Initializes the LeftSensor with the identifier 'left_directional'.
+    Initializes the LeftDirectionalSensor with the identifier 'left_directional'.
     """
     super().__init__(LeftDirectionalSensor.IDENTIFIER)
 

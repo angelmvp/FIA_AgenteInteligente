@@ -1,5 +1,5 @@
 from src.agent.domain.action.action_repository import ActionRepository
-from src.agent.domain.action.agent_action import ActionConfiguration
+from src.agent.domain.action.action_configuration import ActionConfiguration
 from src.agent.domain.action.move_down_action import MoveDownAction
 from src.agent.domain.action.move_left_action import MoveLeftAction
 from src.agent.domain.action.move_right_action import MoveRightAction
@@ -19,8 +19,8 @@ from src.map.domain.map import Map
 from src.map.domain.map_repository import MapRepository
 
 if __name__ == '__main__':
-  terrain_repository: TerrainRepository = TerrainRepository()
-  terrain_repository.load_from_file('../resources/terrain/terrain.json')
+  terrain_repository: TerrainRepository = TerrainRepository('../resources/terrain')
+  terrain_repository.load_from_file('terrain.json')
 
   map_repository: MapRepository = MapRepository('../resources/map')
   maze_map: Map = map_repository.load('maze.csv')

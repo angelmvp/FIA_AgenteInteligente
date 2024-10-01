@@ -12,7 +12,7 @@ class DownDirectionalSensor(DirectionalSensor):
 
   def __init__(self):
     """
-    Initializes the DownSensor with the identifier 'down_directional'.
+    Initializes the DownDirectionalSensor with the identifier 'down_directional'.
     """
     super().__init__(DownDirectionalSensor.IDENTIFIER)
 
