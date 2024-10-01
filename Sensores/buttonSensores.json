@@ -42,7 +42,7 @@
     "#sensor3_button":{
         "images":{
             "normal_image":{
-                "path":"Sensores/img/sensor1_1celda.png"
+                "path":"Sensores/img/sensor3_3x3celdas.png"
             }
         }
     },

@@ -154,14 +154,14 @@ class RunMenu:
                     if self.agent is not None:
                         self.state="map_game"
                         self.current_view=None
-                        self.current_view=MapGame(self.window_surface,self.manager)
+                        self.current_view=MapGame(self.window_surface,self.manager,self.map_data)
                 if self.state=="sensors":
                     self.current_view.process_events(event)
                     self.sensor=self.current_view.get_sensor()
                     if self.sensor is not None:
                         self.state="map_game"
                         self.current_view=None
-                        self.current_view=MapGame(self.window_surface,self.manager)
+                        self.current_view=MapGame(self.window_surface,self.manager,self.map_data)
                 if self.state=="map_game":
                     self.current_view.process_events(event)
                     self.action_map=self.current_view.get_action()

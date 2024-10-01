@@ -124,7 +124,7 @@ class SeleccionarSensor(View):
             relative_rect=pygame.Rect(self.PADDING_IMG, (self.SCREEN_HEIGHT - self.TITLE_HEIGHT) // 2 + self.IMAGE_HEIGHT,
                                        self.IMAGE_WIDTH - self.PADDING_IMG,
                                        self.BUTTON_HEIGHT // 2),
-            text='Otro sensor',
+            text='Sensor 3x3',
             manager=self.manager,
             container=self.menu_container_img,
             object_id=ObjectID(class_id='@sensor_label')
