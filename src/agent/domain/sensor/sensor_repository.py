@@ -31,7 +31,7 @@ class SensorRepository:
     Adds a list of sensors to the repository.
 
     Args:
-      sensors (list[Sensor]): The sensors to add.
+      sensors (Sensor): The sensors to add.
     """
     for sensor in sensors:
       self.add_sensor(sensor)

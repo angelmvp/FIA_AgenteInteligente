@@ -1,7 +1,14 @@
 class KnownCell:
+  """
+  Represents a cell known by the agent, which can have various flags associated with it.
+
+  Attributes:
+    __flags (list[str]): The list of flags associated with the cell.
+  """
+
   def __init__(self, flags: list[str]):
     """
-    Initializes a CellAgent instance.
+    Initializes a KnownCell instance.
 
     Args:
       flags (list[str]): The list of flags associated with the cell.
@@ -10,13 +17,13 @@ class KnownCell:
 
   def add_flag(self, flag: str) -> bool:
     """
-    Adds a flag to the cell.
+    Adds a flag to the cell if it is not already present.
 
     Args:
-        flag (str): The flag to be added.
+      flag (str): The flag to be added.
 
     Returns:
-        bool: True if the flag was added, False if it was already present.
+      bool: True if the flag was added, False if it was already present.
     """
     if flag not in self.__flags:
       self.__flags.append(flag)
@@ -25,13 +32,13 @@ class KnownCell:
 
   def remove_flag(self, flag: str) -> bool:
     """
-    Removes a flag from the cell.
+    Removes a flag from the cell if it is present.
 
     Args:
-        flag (str): The flag to be removed.
+      flag (str): The flag to be removed.
 
     Returns:
-        bool: True if the flag was removed, False if it was not present.
+      bool: True if the flag was removed, False if it was not present.
     """
     if flag in self.__flags:
       self.__flags.remove(flag)
@@ -43,9 +50,9 @@ class KnownCell:
     Checks if the cell has a specific flag.
 
     Args:
-        flag (str): The flag to check.
+      flag (str): The flag to check.
 
     Returns:
-        bool: True if the flag is present, False otherwise.
+      bool: True if the flag is present, False otherwise.
     """
     return flag in self.__flags

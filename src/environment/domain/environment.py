@@ -2,7 +2,6 @@ from typing import Optional
 
 from src.agent.domain.agent import Agent
 from src.environment.domain.cell.cell import Cell
-from src.position.domain.position import Position
 
 
 class Environment:
@@ -136,4 +135,3 @@ class Environment:
       int: The number of columns.
     """
     return self.__columns
-

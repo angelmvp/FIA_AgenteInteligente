@@ -1,15 +1,30 @@
+"""
+This module defines the Sensor class and the SensorResult enum for detecting the terrain type in the cells around the agent.
+"""
+
 from abc import abstractmethod
 from enum import Enum
 
-from src.agent.domain.agent import Agent, Direction
+from src.agent.domain.agent import Agent
 from src.agent.domain.sensor.sensor_configuration import SensorConfiguration
 from src.environment.domain.environment import Environment
 
+
 class SensorResult(Enum):
+  """
+  Enum representing the possible results of a sensor detection.
+
+  Attributes:
+    SUCCESS (int): Detection was successful.
+    UNKNOWN_CELL (int): The cell is unknown.
+    OUT_OF_BOUNDS (int): The detection is out of the environment bounds.
+    HIT_OBSTACLE (int): The detection hit an obstacle.
+  """
   SUCCESS = 0
   UNKNOWN_CELL = 1
   OUT_OF_BOUNDS = 2
   HIT_OBSTACLE = 3
+
 
 class Sensor:
   """
@@ -22,6 +37,9 @@ class Sensor:
   def __init__(self, identifier: str):
     """
     Initializes a Sensor instance.
+
+    Args:
+      identifier (str): The sensor identifier.
     """
     self.__identifier = identifier
 

@@ -12,7 +12,7 @@ class UpDirectionalSensor(DirectionalSensor):
 
   def __init__(self):
     """
-    Initializes the UpSensor with the identifier 'up_directional'.
+    Initializes the UpDirectionalSensor with the identifier 'up_directional'.
     """
     super().__init__(UpDirectionalSensor.IDENTIFIER)
 

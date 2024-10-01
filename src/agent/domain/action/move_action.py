@@ -1,31 +1,69 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 from src.agent.domain.action.action import Action, ActionResult
-from src.agent.domain.action.agent_action import ActionConfiguration
+from src.agent.domain.action.action_configuration import ActionConfiguration
 from src.agent.domain.agent import Agent, Direction
 from src.environment.domain.cell.cell import Cell
 from src.environment.domain.environment import Environment
 
 
 class MoveActionNewCoordinates:
+  """
+  Represents the new coordinates after a move action.
+
+  Attributes:
+    __dx (int): The change in the x-coordinate.
+    __dy (int): The change in the y-coordinate.
+    __direction (Direction): The direction of the move.
+  """
+
   def __init__(self, dx: int, dy: int, direction: Direction):
+    """
+    Initializes a MoveActionNewCoordinates instance.
+
+    Args:
+      dx (int): The change in the x-coordinate.
+      dy (int): The change in the y-coordinate.
+      direction (Direction): The direction of the move.
+    """
     self.__dx = dx
     self.__dy = dy
     self.__direction = direction
 
   def get_dx(self) -> int:
+    """
+    Returns the change in the x-coordinate.
+
+    Returns:
+      int: The change in the x-coordinate.
+    """
     return self.__dx
 
   def get_dy(self) -> int:
+    """
+    Returns the change in the y-coordinate.
+
+    Returns:
+      int: The change in the y-coordinate.
+    """
     return self.__dy
 
   def get_direction(self) -> Direction:
+    """
+    Returns the direction of the move.
+
+    Returns:
+      Direction: The direction of the move.
+    """
     return self.__direction
 
 
 class MoveAction(Action, ABC):
   """
   Base class for move actions.
+
+  Attributes:
+    __identifier (str): The identifier of the action.
   """
 
   def __init__(self, identifier: str) -> None:
@@ -33,7 +71,7 @@ class MoveAction(Action, ABC):
     Initializes a MoveAction instance.
 
     Args:
-        identifier (str): The identifier of the action.
+      identifier (str): The identifier of the action.
     """
     super().__init__(identifier)
 
@@ -43,11 +81,11 @@ class MoveAction(Action, ABC):
     Returns the new coordinates after moving a certain number of steps.
 
     Args:
-        agent (Agent): The agent performing the action.
-        steps (int): The number of steps to move.
+      agent (Agent): The agent performing the action.
+      steps (int): The number of steps to move.
 
     Returns:
-        Optional[tuple[int, int]]: The new coordinates after moving.
+      Optional[MoveActionNewCoordinates]: The new coordinates after moving.
     """
     pass
 
@@ -56,12 +94,12 @@ class MoveAction(Action, ABC):
     Executes the move action.
 
     Args:
-        agent (Agent): The agent performing the action.
-        agent_action (ActionConfiguration): The specific action configuration for the agent.
-        environment (Environment): The environment in which the action is performed.
+      agent (Agent): The agent performing the action.
+      agent_action (ActionConfiguration): The specific action configuration for the agent.
+      environment (Environment): The environment in which the action is performed.
 
     Returns:
-        ActionResult: The result of the action.
+      ActionResult: The result of the action.
     """
     steps: int = agent_action.get_property('steps')
     if type(steps) is not int or steps < 1:
