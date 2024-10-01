@@ -1,7 +1,8 @@
 import pygame as pg
 import sys
 import os
-
+from agente.seleccionarAgente import SeleccionarAgente
+from Sensores.Sensores import SeleccionarSensor
 pg.init()
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 700
@@ -20,7 +21,7 @@ pg.display.set_caption("Menu Principal del Juwego")
 
 class MainMenu:
     def __init__(self, game):
-        self.options = ["Cargar Mapa", "Iniciar Mapa", "Salir"]
+        self.options = ["Cargar Mapa", "Seleccionar Agente", "Salir"]
         self.selected_option = 0
         self.title_font = pg.font.SysFont("comicsans", 70)
         self.font = pg.font.SysFont("comicsans", 50)
@@ -48,7 +49,8 @@ class MainMenu:
         if self.selected_option == 0:
             self.game.show_map_selection()
         elif self.selected_option == 1:
-            Cambiar a una nueva Vista la de agente
+            self.game.current_view = SeleccionarAgente(self.game.window_surface, self.game.manager)
+            print("Sekeccioad")
         elif self.selected_option == 2:
             pg.quit()
             sys.exit()
@@ -83,12 +85,16 @@ class LoadMap:
         return self.map_data
 
 class RunMenu:
-    def __init__(self):
+    def __init__(self, window_surface, manager):
+        self.window_surface = window_surface
+        self.manager = manager
         self.main_menu = MainMenu(self)
+        self.load_map = LoadMap()  # Cambiado para crear una instancia de LoadMap
         self.map_data = None
         self.casilla_selected = None
-        self.state = "menu"  # Estado inicial
-        self.load_map = LoadMap()
+        self.state = "menu"  # Estado inicial es el menú principal
+        self.clock = pg.time.Clock()  # Asegúrate de usar clock en RunMenu
+        self.current_view = None  
 
     def show_map_selection(self):
         self.state = "map_selection"
@@ -100,22 +106,21 @@ class RunMenu:
         title = title_font.render("Selecciona un Mapa", True, WHITE)
         screen.blit(title, (SCREEN_WIDTH // 2 - title.get_width() // 2, 100))
 
-        for i, map_name in enumerate(self.load_map.maps_list):
+        for i, map_name in enumerate(self.load_map.maps_list):  # Ahora accede correctamente a maps_list
             if i == self.load_map.selected_map_index:
                 label = font.render(map_name, True, HIGHLIGHT_COLOR)
             else:
                 label = font.render(map_name, True, WHITE)
             screen.blit(label, (SCREEN_WIDTH // 2 - label.get_width() // 2, 250 + i * 60))
 
-    def load_map(self):
-        loadMap = LoadMap()
-        loadMap.load_map()
-        self.map_data = loadMap.get_map()
-        self.casilla_selected=None
-        self.state = "map"
+    def load_map_data(self):  # Cambiado el nombre de la función
+        self.load_map.load_selected_map()  # Utiliza la instancia de LoadMap
+        self.map_data = self.load_map.get_map()
+
     def run(self):
         running = True
         while running:
+            time_delta = self.clock.tick(60) / 10000.0  # 60 FPS
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     running = False
@@ -137,16 +142,37 @@ class RunMenu:
                         elif event.key == pg.K_RETURN:
                             self.load_map.load_selected_map()
                             self.map_data = self.load_map.get_map()
+                            self.state = "seleccion_agente"
+                            self.current_view = SeleccionarAgente(self.window_surface, self.manager)
+
+                # También procesamos eventos de pygame_gui
+                if self.state=="seleccion_agente" :
+                    self.current_view.process_events(event)
+                    self.agent=self.current_view.get_agent()
+                    if self.agent is not None:
+                        self.state="sensors"
+                        self.current_view=None
+                        self.current_view=SeleccionarSensor(self.window_surface,self.manager)
+                if self.state=="sensors":
+                    self.current_view.process_events(event)
+                    self.sensor=self.current_view.get_sensor()
+                pg.display.flip()
+            if self.current_view:
+                self.current_view.update(time_delta)
+
+            # Lógica de dibujo dependiendo del estado
             if self.state == "menu":
-                self.clear_map()
                 self.main_menu.draw()
             elif self.state == "map_selection":
                 self.draw_map_selection()
-
-            pg.display.flip()
-
+            elif self.state == "seleccion_agente":
+                self.current_view.draw()
+                self.current_view.process_events(event) 
+                self.manager.process_events(event)
+            elif self.state=="game_running":
+                self.current_view.draw()
+            elif self.state=="sensors":
+                self.current_view.draw()
+        
         pg.quit()
         sys.exit()
-
-game = RunMenu()
-game.run()

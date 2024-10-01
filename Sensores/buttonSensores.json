@@ -1,0 +1,56 @@
+{
+    "@primary_buttons":{
+        "colours":{
+            "normal_border": "White",
+            "normal_bg": "rgb(20, 230, 43)",
+             "normal_text": "rgb(200, 2, 0)"
+         },
+        "misc":
+         {
+             "shape": "rounded_rectangle",
+             "shape_corner_radius": "10",
+             "border_width": "3"
+         }    
+    },
+    "@img_button":{
+        "colours":{
+                "normal_bg":"Cyan",
+                "hovered_bg": "Cyan",
+                "disabled_bg": "Green",
+                "selected_bg": "Green",
+                "normal_border": "Cyan",
+                "hovered_border": "Cyan",
+                "disabled_border": "Cyan",
+                "selected_border": "Green",
+                "active_border": "Cyan"
+            }
+    },
+    "#sensor1_button": {  
+            "images": {
+                "normal_image": {
+                    "path": "Sensores/img/sensor1_1celda.png"
+                }
+            }            
+    },
+    "#sensor2_button":{
+        "images":{
+            "normal_image":{
+                "path":"Sensores/img/sensor2_4celdas.png"
+            }
+        }
+    },
+    "#sensor3_button":{
+        "images":{
+            "normal_image":{
+                "path":"Sensores/img/sensor1_1celda.png"
+            }
+        }
+    },
+    "#sensor4_button":{
+        "images":{
+            "normal_image":{
+                "path":"Sensores/img/sensor1_1celda.png"
+            }
+        }
+    }
+}
