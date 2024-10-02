@@ -1,5 +1,5 @@
 {
-  "0": {
+  "1": {
     "display_name": "Montaña",
     "color": "#808080",
     "movement_costs": {
@@ -9,7 +9,7 @@
       "sasquatch": 15
     }
   },
-  "1": {
+  "2": {
     "display_name": "Tierra",
     "color": "#fabf8f",
     "movement_costs": {
@@ -19,7 +19,7 @@
       "sasquatch": 4
     }
   },
-  "2": {
+  "3": {
     "display_name": "Agua",
     "color": "#02afff",
     "movement_costs": {
@@ -29,7 +29,7 @@
       "sasquatch": null
     }
   },
-  "3": {
+  "4": {
     "display_name": "Arena",
     "color": "#ffbf00",
     "movement_costs": {
@@ -39,7 +39,7 @@
       "sasquatch": null
     }
   },
-  "4": {
+  "5": {
     "display_name": "Bosque",
     "color": "#96d250",
     "movement_costs": {
@@ -47,6 +47,26 @@
       "monkey": 1,
       "octopus": 3,
       "sasquatch": 4
+    }
+  },
+  "6": {
+    "display_name": "Pantano",
+    "color": "#00ff00",
+    "movement_costs": {
+      "human": 5,
+      "monkey": 5,
+      "octopus": 5,
+      "sasquatch": 5
+    }
+  },
+  "7": {
+    "display_name": "Nieve",
+    "color": "#ffffff",
+    "movement_costs": {
+      "human": 7,
+      "monkey": 7,
+      "octopus": 7,
+      "sasquatch": 7
     }
   }
 }

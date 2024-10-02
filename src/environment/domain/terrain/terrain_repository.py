@@ -1,4 +1,5 @@
 import json
+import os
 from typing import Optional
 
 from src.environment.domain.terrain.terrain import Terrain
@@ -23,7 +24,7 @@ class TerrainRepository:
     self.__directory_path: str = directory_path
     self.__terrain_dict: dict[int, Terrain] = {}
 
-  def load_from_file(self, file_name: str) -> None:
+  def load(self, file_name: str) -> None:
     """
     Loads terrain data from the JSON file at the given path and stores it in the terrain_dict attribute.
 
@@ -42,6 +43,15 @@ class TerrainRepository:
         terrain_data['color'],
         terrain_data['display_name'],
         terrain_data['movement_costs'])
+
+  def get_all_from_directory(self) -> list[str]:
+    """
+    Returns a list of all terrain display names.
+
+    Returns:
+      list[str]: A list of all terrain display names.
+    """
+    return os.listdir(self.__directory_path)
 
   def get_by_code(self, code: int) -> Optional[Terrain]:
     """

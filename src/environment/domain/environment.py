@@ -33,6 +33,15 @@ class Environment:
     self.__rows: int = rows
     self.__columns: int = columns
 
+  def get_agents(self) -> list[Agent]:
+    """
+    Returns the list of agents in the environment.
+
+    Returns:
+      list[Agent]: The list of agents.
+    """
+    return self.__agents
+
   def add_agent(self, agent: Agent):
     """
     Adds an agent to the environment.

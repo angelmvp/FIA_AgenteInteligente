@@ -1,5 +1,7 @@
 import os
 
+import flet
+
 from src.agent.domain.action.action_repository import ActionRepository
 from src.agent.domain.action.action_configuration import ActionConfiguration
 from src.agent.domain.action.move_down_action import MoveDownAction
@@ -16,23 +18,22 @@ from src.agent.domain.sensor.sensor_repository import SensorRepository
 from src.agent.domain.sensor.up_directional_sensor import UpDirectionalSensor
 from src.environment.application.environment_agent_service import EnvironmentAgentService, ExecuteActionResult, ResultCode, ExecuteSensorResult
 from src.environment.application.environment_service import EnvironmentService
-from src.environment.domain.environment import Environment
 from src.environment.domain.terrain.terrain_repository import TerrainRepository
-from src.map.domain.map import Map
 from src.map.domain.map_repository import MapRepository
+from ui.app_ui import AppUi
 
 if __name__ == '__main__':
   project_root = os.path.dirname(os.path.abspath(__file__))
 
   terrain_repository: TerrainRepository = TerrainRepository(f'{project_root}/resources/terrain')
-  terrain_repository.load_from_file('maze.json')
+  terrain_repository.load('maze.json')
 
   map_repository: MapRepository = MapRepository(f'{project_root}/resources/map')
-  maze_map: Map = map_repository.load('maze.csv')
-  maze_map.print()
+  map_repository.load('maze.csv')
+  map_repository.get_map().print()
 
-  environment_service: EnvironmentService = EnvironmentService(terrain_repository)
-  environment: Environment = environment_service.create_environment_from_map(maze_map)
+  environment_service: EnvironmentService = EnvironmentService(map_repository, terrain_repository)
+  environment_service.set_environment()
 
   action_repository: ActionRepository = ActionRepository()
   action_repository.add_actions(MoveUpAction(), MoveDownAction(), MoveLeftAction(), MoveRightAction())
@@ -54,7 +55,7 @@ if __name__ == '__main__':
 
   environment_agent_service: EnvironmentAgentService = EnvironmentAgentService(action_repository, sensor_repository)
 
-  known_map = [[None for _ in range(maze_map.get_rows())] for _ in range(maze_map.get_columns())]
+  known_map = [[None for _ in range(map_repository.get_map().get_rows())] for _ in range(map_repository.get_map().get_columns())]
   human_agent = Agent(
     0,
     {
@@ -79,48 +80,52 @@ if __name__ == '__main__':
     1,
     1)
 
-  environment.add_agent(human_agent)
+  # environment.add_agent(human_agent)
+  #
+  # environment.print_discovered_map()
+  #
+  # execute_action_result: ExecuteActionResult = environment_agent_service.execute_action(human_agent, environment, MoveDownAction.IDENTIFIER)
+  # print('Action result:', execute_action_result.get_action_result())
+  #
+  # execute_sensor_result: ExecuteSensorResult = environment_agent_service.execute_sensor(human_agent, environment, DownDirectionalSensor.IDENTIFIER)
+  # print('Sensor result:', execute_sensor_result.get_sensor_result())
+  #
+  # environment.print_discovered_map()
+  #
+  # execute_action_result: ExecuteActionResult = environment_agent_service.execute_action(human_agent, environment, MoveDownAction.IDENTIFIER)
+  # print('Action result:', execute_action_result.get_action_result())
+  #
+  # print('--= Agent information =--')
+  # print(f'Position: ({human_agent.get_x()}, {human_agent.get_y()})')
+  # print(f'Direction: {human_agent.get_direction()}')
+  # print(f'Steps: {human_agent.get_steps()}')
+  # print(f'Accumulated Movement Cost: {human_agent.get_accumulated_movement_cost()}')
+  # print('--= ----- =--')
+  #
+  # environment.print_discovered_map()
+  #
+  # execute_sensor_result: ExecuteSensorResult = environment_agent_service.execute_sensor(human_agent, environment, 'every_direction')
+  # print('Sensor result:', execute_sensor_result.get_sensor_result())
+  #
+  # environment.print_discovered_map()
+  #
+  # execute_action_result: ExecuteActionResult = environment_agent_service.execute_action(human_agent, environment, MoveRightAction.IDENTIFIER)
+  # print('Action result:', execute_action_result.get_action_result())
+  #
+  # print('--= Agent information =--')
+  # print(f'Position: ({human_agent.get_x()}, {human_agent.get_y()})')
+  # print(f'Direction: {human_agent.get_direction()}')
+  # print(f'Steps: {human_agent.get_steps()}')
+  # print(f'Accumulated Movement Cost: {human_agent.get_accumulated_movement_cost()}')
+  # print('--= ----- =--')
+  #
+  # environment.print_discovered_map()
+  #
+  # execute_sensor_result: ExecuteSensorResult = environment_agent_service.execute_sensor(human_agent, environment, 'every_direction')
+  # print('Sensor result:', execute_sensor_result.get_sensor_result())
+  #
+  # environment.print_discovered_map()
 
-  environment.print_discovered_map()
+  app_ui: AppUi = AppUi(environment_service, map_repository, terrain_repository)
 
-  execute_action_result: ExecuteActionResult = environment_agent_service.execute_action(human_agent, environment, MoveDownAction.IDENTIFIER)
-  print('Action result:', execute_action_result.get_action_result())
-
-  execute_sensor_result: ExecuteSensorResult = environment_agent_service.execute_sensor(human_agent, environment, DownDirectionalSensor.IDENTIFIER)
-  print('Sensor result:', execute_sensor_result.get_sensor_result())
-
-  environment.print_discovered_map()
-
-  execute_action_result: ExecuteActionResult = environment_agent_service.execute_action(human_agent, environment, MoveDownAction.IDENTIFIER)
-  print('Action result:', execute_action_result.get_action_result())
-
-  print('--= Agent information =--')
-  print(f'Position: ({human_agent.get_x()}, {human_agent.get_y()})')
-  print(f'Direction: {human_agent.get_direction()}')
-  print(f'Steps: {human_agent.get_steps()}')
-  print(f'Accumulated Movement Cost: {human_agent.get_accumulated_movement_cost()}')
-  print('--= ----- =--')
-
-  environment.print_discovered_map()
-
-  execute_sensor_result: ExecuteSensorResult = environment_agent_service.execute_sensor(human_agent, environment, 'every_direction')
-  print('Sensor result:', execute_sensor_result.get_sensor_result())
-
-  environment.print_discovered_map()
-
-  execute_action_result: ExecuteActionResult = environment_agent_service.execute_action(human_agent, environment, MoveRightAction.IDENTIFIER)
-  print('Action result:', execute_action_result.get_action_result())
-
-  print('--= Agent information =--')
-  print(f'Position: ({human_agent.get_x()}, {human_agent.get_y()})')
-  print(f'Direction: {human_agent.get_direction()}')
-  print(f'Steps: {human_agent.get_steps()}')
-  print(f'Accumulated Movement Cost: {human_agent.get_accumulated_movement_cost()}')
-  print('--= ----- =--')
-
-  environment.print_discovered_map()
-
-  execute_sensor_result: ExecuteSensorResult = environment_agent_service.execute_sensor(human_agent, environment, 'every_direction')
-  print('Sensor result:', execute_sensor_result.get_sensor_result())
-
-  environment.print_discovered_map()
+  flet.app(target=app_ui.start)
