@@ -1,6 +1,7 @@
 import pygame as pg
 import sys
 import os
+import csv
 from front.agente.seleccionarAgente import SeleccionarAgente
 from front.Sensores.Sensores import SeleccionarSensor
 from front.Mapa.Mapa import MapGame
@@ -24,7 +25,7 @@ pg.display.set_caption("Menu Principal del Juwego")
 
 class MainMenu:
     def __init__(self, game):
-        self.options = ["Cargar Mapa", "Crear un nuevo Mapa", "Salir"]
+        self.options = ["Cargar Mapa", "Crear un nuevo Mapa","Editar un Mapa", "Salir"]
         self.selected_option = 0
         self.title_font = pg.font.SysFont("comicsans", 70)
         self.font = pg.font.SysFont("comicsans", 50)
@@ -54,7 +55,10 @@ class MainMenu:
         elif self.selected_option == 1:
             self.game.create_map()
             print("Sekeccioad")
-        elif self.selected_option == 2:
+        elif self.selected_option==2:
+            self.game.edit_map()
+            print("edicion")
+        elif self.selected_option == 3:
             pg.quit()
             sys.exit()
 class LoadMap:
@@ -100,12 +104,16 @@ class RunMenu:
         self.current_view = None  
         self.agent=None
         self.sensor=None
+        self.edit=False
     def show_map_selection(self):
         self.state = "map_selection"
     def create_map(self):
         print("mapa creado")
         self.state="map_creation"
         self.current_view=MapCreation(self.window_surface,self.manager)
+    def edit_map(self):
+        self.state="map_selection"
+        self.edit=True
     def draw_map_selection(self):
         screen.fill(BLACK)
         title_font = pg.font.SysFont("comicsans", 70)
@@ -123,7 +131,20 @@ class RunMenu:
     def load_map_data(self):  
         self.load_map.load_selected_map()
         self.map_data = self.load_map.get_map()
-
+    def save_map(self,file_name,map_data):
+        output_folder = 'resources/map/'
+        
+        # Verifica si la carpeta existe, si no, créala
+        if not os.path.exists(output_folder):
+            print("no existe la carpeta")
+            return
+        file_path = os.path.join(output_folder, file_name + '.csv')
+        
+        # Guardar el archivo CSV
+        with open(file_path, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            for row in map_data:
+                writer.writerow(row)
     def run(self):
         running = True
         while running:
@@ -149,8 +170,12 @@ class RunMenu:
                         elif event.key == pg.K_RETURN:
                             self.load_map.load_selected_map()
                             self.map_data = self.load_map.get_map()
-                            self.state = "agent_selection"
-                            self.current_view = SeleccionarAgente(self.window_surface, self.manager)
+                            if self.edit==False:
+                                self.state = "agent_selection"
+                                self.current_view = SeleccionarAgente(self.window_surface, self.manager)
+                            else:
+                                self.state="map_edition"
+                                self.current_view=MapEdition(self.window_surface,self.manager,self.map_data)
 
                 # También procesamos eventos de pygame_gui
                 if self.state=="agent_selection" :
@@ -193,8 +218,27 @@ class RunMenu:
                             print(columns)
                             self.state="map_edition"
                             self.current_view=None
-                            self.current_view = MapEdition(self.window_surface,self.manager,0,rows,columns)
+                            self.current_view = MapEdition(self.window_surface,self.manager,self.map_data)
                             print("avanzar")
+                if self.state=="map_edition":
+                    self.current_view.process_events(event)
+                    self.action_map=self.current_view.get_action()
+                    if self.action_map is not None:
+                        if self.action_map=="back":
+                            self.state="map_selection"
+                            self.edit=True
+                        elif self.action_map=="save":
+                            file_name=self.current_view.get_name_file()
+                            self.map_data=self.current_view.get_map_data()
+                            self.save_map(file_name,self.map_data)
+                            self.state="menu"
+                            self.edit=False
+                        elif self.action_map=="play":
+                            self.map_data=self.current_view.get_map_data()
+                            self.state="agent_selection"
+                            self.current_view=None
+                            self.current_view=SeleccionarAgente(self.window_surface,self.manager)
+
                 pg.display.flip()
             if self.current_view:
                 self.current_view.update(time_delta)
@@ -202,6 +246,7 @@ class RunMenu:
             # Lógica de dibujo dependiendo del estado
             if self.state == "menu":
                 self.main_menu.draw()
+                self.map_data=None
             elif self.state == "map_selection":
                 self.draw_map_selection()
             elif self.state == "agent_selection":

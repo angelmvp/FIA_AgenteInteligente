@@ -34,7 +34,7 @@ class View:
         pass
 
 class MapEdition(View):
-    def __init__(self, window_surface, manager,map_data,rows,columns):
+    def __init__(self, window_surface, manager,map_data):
         print("Vista edicion juego")
         self.map_data=map_data
         self.window_surface = window_surface
@@ -44,10 +44,10 @@ class MapEdition(View):
         super().__init__(window_surface, manager)
         self.action = None
         self.name_new_map=None
-        self.rows=rows
-        self.columns=columns
-        print(self.rows)
-        print(self.columns)
+        # self.rows=rows
+        # self.columns=columns
+        # print(self.rows)
+        # print(self.columns)
         self.setup_ui()
 
     def setup_ui(self):
@@ -106,33 +106,28 @@ class MapEdition(View):
             manager=self.manager,
             object_id=ObjectID(class_id='@menu_container_img')
         )
-
-        # Botones
-        self.menu_save = pygame_gui.elements.UIButton(
-            relative_rect=pygame.Rect(PADDING_IMG, PADDING_IMG, IMAGE_WIDTH - PADDING_IMG, IMAGE_HEIGHT - PADDING_IMG),
-            text='RegresaMenu',
-            manager=self.manager,
-            container=self.menu_buttons,
-            object_id=ObjectID(class_id='@img_button', object_id='#nada')
-        )
-        label_columns_rect = pygame.Rect(3 * SCREEN_WIDTH // 4 - 150, 200, 100, 50)
-        self.label_columns = pygame_gui.elements.UILabel(
-            relative_rect=label_columns_rect,
-            text='Columnas',
-            manager=self.manager
-        )
-
-        input_name_rect = pygame.Rect(30,30,MENU_WIDTH//3,LABEL_HEIGHT)
+        self.label_save_name=pygame_gui.elements.UILabel(
+                relative_rect=pygame.Rect(MENU_WIDTH//2,0,MENU_WIDTH//3,LABEL_HEIGHT),
+                text="Nombre del archivo ", manager=self.manager,container=self.menu_buttons)
+        
+        input_name_rect = pygame.Rect(MENU_WIDTH//2,20,MENU_WIDTH//3,LABEL_HEIGHT)
         self.input_name = pygame_gui.elements.UITextEntryLine(relative_rect=input_name_rect,
             container=self.menu_buttons,
             manager=self.manager
         )
-
         button_back_rect = pygame.Rect(0, 0,
                                IMAGE_WIDTH - PADDING_IMG, IMAGE_HEIGHT - PADDING_IMG)
         self.button_back = pygame_gui.elements.UIButton(
             relative_rect=button_back_rect,
             text='Regresar',
+            manager=self.manager,
+            container=self.menu_buttons
+        )
+        play_button_rect = pygame.Rect(0, (SCREEN_HEIGHT - TITLE_HEIGHT - MENU_INSTRUCTIONS_HEIGHT) // 2,
+                               IMAGE_WIDTH - PADDING_IMG, IMAGE_HEIGHT - PADDING_IMG)
+        self.play_button = pygame_gui.elements.UIButton(
+            relative_rect=play_button_rect,
+            text='JUGAAAR',
             manager=self.manager,
             container=self.menu_buttons
         )
@@ -152,15 +147,13 @@ class MapEdition(View):
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == self.button_back:
                 print('Retroceder al menú principal')
-                advance = True
-                self.sensor = "back"
+                self.action = "back"
             elif event.ui_element == self.save_map_button:
                 self.name_new_map=self.input_name.get_text()
                 print('guardar')
-                advance = True
-                self.action = "save"        
-        if advance:
-            return self.action
+                self.action = "save" 
+            elif event.ui_element==self.play_button:
+                self.action="play"       
     def draw_map(self):
         pass
     def update(self, time_delta):
@@ -172,20 +165,23 @@ class MapEdition(View):
         pygame.display.update()
 
     def get_action(self):
-        if self.action:
+        if self.action is not None:
             self.clear_ui()
             return self.action
-
+        return None
+    def get_map_data(self):
+        return self.map_data
+    def get_name_file(self):
+        return self.name_new_map
     def clear_ui(self):
         self.panel_header.kill()
         self.button_back.kill()
         self.label_title_map.kill()
         self.menu_buttons.kill()
-        self.menu_save.kill()
-        self.agent_selection_button.kill()
-        self.actions_button.kill()
-        self.sensors_button.kill()
+        self.play_button.kill()
         self.menu_edition.kill()
+        self.label_save_name.kill()
+        self.input_name.kill()
         # self.label_celda_title.kill()
         # self.label_terrain_type.kill()
         # self.label_cost.kill()

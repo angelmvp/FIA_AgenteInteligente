@@ -118,6 +118,7 @@ class MapCreation(View):
     def clear_ui(self):
         self.title_label.kill()
         self.label_rows.kill()
+        self.label_columns.kill()
         self.input_rows.kill()
         self.label_columns.kill()
         self.input_columns.kill()
