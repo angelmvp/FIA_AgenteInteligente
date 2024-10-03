@@ -3,6 +3,7 @@ from typing import Optional
 import flet
 import flet as ft
 
+from src.agent.domain.agent import Agent
 from src.environment.application.environment_service import EnvironmentService
 from src.environment.domain.environment import Environment
 from ui.view.view_ui import ViewUi
@@ -17,8 +18,11 @@ class PlayAgentSelectionViewUi(ViewUi):
     self.__environment_service: EnvironmentService = environment_service
     self.__view_service: ViewUiService = view_service
 
-  def on_click(self, selected_agent: str) -> None:
+  def on_click(self, selected_agent: Agent) -> None:
     print(f'Seleccionado: {selected_agent}')
+    environment: Optional[Environment] = self.__environment_service.get_environment()
+    if environment is not None:
+      environment.set_selected_agent(selected_agent)
     self.__view_service.navigate_to(ViewUiConstants.PLAY_AGENT_POSITION_SELECTION_SCREEN_IDENTIFIER)
 
   def create_control(self) -> list[flet.Control]:

@@ -26,14 +26,8 @@ if __name__ == '__main__':
   project_root = os.path.dirname(os.path.abspath(__file__))
 
   terrain_repository: TerrainRepository = TerrainRepository(f'{project_root}/resources/terrain')
-  terrain_repository.load('maze.json')
-
   map_repository: MapRepository = MapRepository(f'{project_root}/resources/map')
-  map_repository.load('maze.csv')
-  map_repository.get_map().print()
-
   environment_service: EnvironmentService = EnvironmentService(map_repository, terrain_repository)
-  environment_service.set_environment()
 
   action_repository: ActionRepository = ActionRepository()
   action_repository.add_actions(MoveUpAction(), MoveDownAction(), MoveLeftAction(), MoveRightAction())
@@ -43,6 +37,7 @@ if __name__ == '__main__':
   down_directional_sensor: DownDirectionalSensor = DownDirectionalSensor()
   left_directional_sensor: LeftDirectionalSensor = LeftDirectionalSensor()
   right_directional_sensor: RightDirectionalSensor = RightDirectionalSensor()
+
   sensor_repository.add_sensors(
     up_directional_sensor,
     down_directional_sensor,
@@ -54,31 +49,6 @@ if __name__ == '__main__':
   )
 
   environment_agent_service: EnvironmentAgentService = EnvironmentAgentService(action_repository, sensor_repository)
-
-  known_map = [[None for _ in range(map_repository.get_map().get_rows())] for _ in range(map_repository.get_map().get_columns())]
-  human_agent = Agent(
-    0,
-    {
-      MoveUpAction.IDENTIFIER: ActionConfiguration(MoveUpAction.IDENTIFIER, {'steps': 1}),
-      MoveDownAction.IDENTIFIER: ActionConfiguration(MoveDownAction.IDENTIFIER, {'steps': 1}),
-      MoveLeftAction.IDENTIFIER: ActionConfiguration(MoveLeftAction.IDENTIFIER, {'steps': 1}),
-      MoveRightAction.IDENTIFIER: ActionConfiguration(MoveRightAction.IDENTIFIER, {'steps': 2})
-    },
-    None,
-    known_map,
-    'human',
-    {
-      UpDirectionalSensor.IDENTIFIER: SensorConfiguration(UpDirectionalSensor.IDENTIFIER, False, 1),
-      DownDirectionalSensor.IDENTIFIER: SensorConfiguration(DownDirectionalSensor.IDENTIFIER, False, 1),
-      LeftDirectionalSensor.IDENTIFIER: SensorConfiguration(LeftDirectionalSensor.IDENTIFIER, False, 1),
-      RightDirectionalSensor.IDENTIFIER: SensorConfiguration(RightDirectionalSensor.IDENTIFIER, False, 1),
-      'up_down': SensorConfiguration('up_down', False, 1),
-      'left_right': SensorConfiguration('left_right', False, 1),
-      'every_direction': SensorConfiguration('every_direction', True, 3)
-    },
-    0,
-    1,
-    1)
 
   # environment.add_agent(human_agent)
   #
@@ -126,6 +96,6 @@ if __name__ == '__main__':
   #
   # environment.print_discovered_map()
 
-  app_ui: AppUi = AppUi(environment_service, map_repository, terrain_repository)
+  app_ui: AppUi = AppUi(environment_agent_service, environment_service, map_repository, terrain_repository)
 
   flet.app(target=app_ui.start)

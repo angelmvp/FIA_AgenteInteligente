@@ -20,7 +20,7 @@ class PlayTerrainSelectionViewUi(ElementSelectionViewUi):
   def on_click(self, selected_element_name: str) -> None:
     self.__terrain_repository.load(selected_element_name)
     self.__environment_service.set_environment()
-    self._view_service.navigate_to(ViewUiConstants.PLAY_AGENT_POSITION_SELECTION_SCREEN_IDENTIFIER)
+    self._view_service.navigate_to(ViewUiConstants.PLAY_AGENT_SELECTION_SCREEN_IDENTIFIER)
 
   def get_previous_view_identifier(self) -> str:
     return ViewUiConstants.PLAY_MAP_SELECTION_SCREEN_IDENTIFIER

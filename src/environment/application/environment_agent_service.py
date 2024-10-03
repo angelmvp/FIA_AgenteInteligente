@@ -133,7 +133,27 @@ class EnvironmentAgentService:
     self.__action_repository = action_repository
     self.__sensor_repository = sensor_repository
 
-  def execute_action(self, agent: Agent, environment: Environment, action_identifier: str) -> ExecuteActionResult:
+  def execute_action(self, agent: Agent, environment: Environment, action_configuration: ActionConfiguration) -> ExecuteActionResult:
+    """
+    Executes an action for an agent in an environment.
+
+    Args:
+      agent (Agent): The agent that will execute the action.
+      environment (Environment): The environment in which the agent will execute the action.
+      action_configuration (str): The action configuration to be executed.
+
+    Returns:
+      ExecuteActionResult: The result of the action execution.
+    """
+    action: Action = self.__action_repository.get_action(action_configuration.get_identifier())
+    if action is None:
+      return ExecuteActionResult(ResultCode.NOT_FOUND_IN_REPOSITORY, None)
+    action_result: ActionResult = action.execute(agent, action_configuration, environment)
+    if action_result is not ActionResult.SUCCESS:
+      return ExecuteActionResult(ResultCode.FAILED, action_result)
+    return ExecuteActionResult(ResultCode.SUCCESS, action_result)
+
+  def execute_action_from_identifier(self, agent: Agent, environment: Environment, action_identifier: str) -> ExecuteActionResult:
     """
     Executes an action for an agent in an environment.
 
@@ -148,15 +168,9 @@ class EnvironmentAgentService:
     action_configuration: Optional[ActionConfiguration] = agent.get_action(action_identifier)
     if action_configuration is None:
       return ExecuteActionResult(ResultCode.NOT_FOUND_IN_AGENT, None)
-    action: Action = self.__action_repository.get_action(action_identifier)
-    if action is None:
-      return ExecuteActionResult(ResultCode.NOT_FOUND_IN_REPOSITORY, None)
-    action_result: ActionResult = action.execute(agent, action_configuration, environment)
-    if action_result is not ActionResult.SUCCESS:
-      return ExecuteActionResult(ResultCode.FAILED, action_result)
-    return ExecuteActionResult(ResultCode.SUCCESS, action_result)
+    return self.execute_action(agent, environment, action_configuration)
 
-  def execute_sensor(self, agent: Agent, environment: Environment, sensor_identifier: str) -> ExecuteSensorResult:
+  def execute_sensor_from_identifier(self, agent: Agent, environment: Environment, sensor_identifier: str) -> ExecuteSensorResult:
     """
     Executes a sensor for an agent in an environment.
 
@@ -171,7 +185,21 @@ class EnvironmentAgentService:
     sensor_configuration: Optional[SensorConfiguration] = agent.get_sensor(sensor_identifier)
     if sensor_configuration is None:
       return ExecuteSensorResult(ResultCode.NOT_FOUND_IN_AGENT, None)
-    sensor: Sensor = self.__sensor_repository.get_sensor(sensor_identifier)
+    return self.execute_sensor(agent, environment, sensor_configuration)
+
+  def execute_sensor(self, agent: Agent, environment: Environment, sensor_configuration: SensorConfiguration) -> ExecuteSensorResult:
+    """
+    Executes a sensor for an agent in an environment.
+
+    Args:
+      agent (Agent): The agent that will execute the sensor.
+      environment (Environment): The environment in which the agent will execute the sensor.
+      sensor_configuration (str): The sensor configuration to be executed.
+
+    Returns:
+      ExecuteSensorResult: The result of the sensor execution.
+    """
+    sensor: Sensor = self.__sensor_repository.get_sensor(sensor_configuration.get_identifier())
     if sensor is None:
       return ExecuteSensorResult(ResultCode.NOT_FOUND_IN_REPOSITORY, None)
     sensor_result: SensorResult = sensor.detect(agent, sensor_configuration, environment)

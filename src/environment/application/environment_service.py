@@ -1,5 +1,6 @@
 from typing import Optional
 
+from src.agent.domain.default_agents import DefaultAgents
 from src.environment.domain.cell.cell import Cell
 from src.environment.domain.environment import Environment
 from src.environment.domain.terrain.terrain import Terrain
@@ -70,5 +71,11 @@ class EnvironmentService:
     if map is None:
       raise ValueError("No map selected.")
     cells: list[list[Cell]] = self.create_cells_from_map(map)
-    discovered_map: list[list[bool]] = [[False for _ in range(map.get_rows())] for _ in range(map.get_columns())]
-    self.__environment = Environment([], discovered_map, cells, map.get_rows(), map.get_columns())
+    rows: int = map.get_rows()
+    columns: int = map.get_columns()
+    discovered_map: list[list[bool]] = [[False for _ in range(rows)] for _ in range(columns)]
+    self.__environment = Environment([], discovered_map, cells, rows, columns)
+    self.__environment.add_agent(DefaultAgents.create_agent('human', columns, rows))
+    self.__environment.add_agent(DefaultAgents.create_agent('monkey', columns, rows))
+    self.__environment.add_agent(DefaultAgents.create_agent('sasquatch', columns, rows))
+    self.__environment.add_agent(DefaultAgents.create_agent('octopus', columns, rows))

@@ -56,3 +56,12 @@ class KnownCell:
       bool: True if the flag is present, False otherwise.
     """
     return flag in self.__flags
+
+  def list_flags(self) -> list[str]:
+    """
+    Lists the flags associated with the cell.
+
+    Returns:
+      list[str]: The list of flags.
+    """
+    return self.__flags

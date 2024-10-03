@@ -89,7 +89,8 @@ class Agent:
     self.__total_steps: int = total_steps
     self.__x: int = x
     self.__y: int = y
-    self.set_known(x, y)
+    self.__finish_position_x: Optional[int] = None
+    self.__finish_position_y: Optional[int] = None
 
   def get_name(self) -> str:
     """
@@ -121,6 +122,15 @@ class Agent:
     """
     return self.__actions.get(identifier, None)
 
+  def list_actions(self) -> list[ActionConfiguration]:
+    """
+    Lists the actions of the agent.
+
+    Returns:
+      list[ActionConfiguration]: The list of actions.
+    """
+    return list(self.__actions.values())
+
   def add_sensor(self, sensor: SensorConfiguration) -> None:
     """
     Adds a sensor to the agent.
@@ -141,6 +151,15 @@ class Agent:
       Optional[SensorConfiguration]: The sensor, or None if not found.
     """
     return self.__sensors.get(identifier, None)
+
+  def list_sensors(self) -> list[SensorConfiguration]:
+    """
+    Lists the sensors of the agent.
+
+    Returns:
+      list[SensorConfiguration]: The list of sensors.
+    """
+    return list(self.__sensors.values())
 
   def set_known(self, x: int, y: int) -> None:
     """
@@ -167,6 +186,37 @@ class Agent:
     if not self.is_known(x, y):
       return False
     return self.__known_map[y][x].add_flag(flag)
+
+  def remove_flag(self, x: int, y: int, flag: str) -> bool:
+    """
+    Removes a flag from a cell.
+
+    Args:
+      x (int): The x-coordinate of the cell.
+      y (int): The y-coordinate of the cell.
+      flag (str): The flag to be removed.
+
+    Returns:
+      bool: True if the flag was removed, False if it was not present.
+    """
+    if not self.is_known(x, y):
+      return False
+    return self.__known_map[y][x].remove_flag(flag)
+
+  def list_flags(self, x: int, y: int) -> list[str]:
+    """
+    Lists the flags of a cell.
+
+    Args:
+      x (int): The x-coordinate of the cell.
+      y (int): The y-coordinate of the cell.
+
+    Returns:
+      list[str]: The list of flags.
+    """
+    if not self.is_known(x, y):
+      return []
+    return self.__known_map[y][x].list_flags()
 
   def is_known(self, x: int, y: int) -> bool:
     """
@@ -195,6 +245,7 @@ class Agent:
     """
     self.__x = x
     self.__y = y
+    self.set_known(x, y)
 
   def get_x(self) -> int:
     """
@@ -264,3 +315,36 @@ class Agent:
     Increases the total number of steps the agent has taken.
     """
     self.__total_steps += 1
+
+  def set_finish_position(self, x: int, y: int) -> None:
+    """
+    Sets the finish position of the agent.
+
+    Args:
+      x (int): The x-coordinate of the finish position.
+      y (int): The y-coordinate of the finish position.
+    """
+    self.__finish_position_x = x
+    self.__finish_position_y = y
+
+  def get_finish_position(self) -> tuple[int, int]:
+    """
+    Returns the finish position of the agent.
+
+    Returns:
+      tuple[int, int]: The finish position.
+    """
+    return self.__finish_position_x, self.__finish_position_y
+
+  def is_in_position(self, x: int, y: int) -> bool:
+    """
+    Checks if the agent is in the given position.
+
+    Args:
+      x (int): The x-coordinate to check.
+      y (int): The y-coordinate to check.
+
+    Returns:
+      bool: True if the agent is in the position, False otherwise.
+    """
+    return self.__x == x and self.__y == y

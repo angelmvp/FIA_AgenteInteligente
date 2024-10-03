@@ -12,14 +12,14 @@ from ui.view.view_ui_constants import ViewUiConstants
 from ui.view.view_ui_repository import ViewUiService
 
 
-class PlayAgentPositionSelectionViewUi(ViewUi):
+class PlayAgentFinishPositionSelectionViewUi(ViewUi):
   CELL_SIZE = 25
   SPACING = 5
   VISIBLE_COLUMNS = 26
   VISIBLE_ROWS = 26
 
   def __init__(self, environment_service: EnvironmentService, view_service: ViewUiService):
-    super().__init__(ViewUiConstants.PLAY_AGENT_POSITION_SELECTION_SCREEN_IDENTIFIER)
+    super().__init__(ViewUiConstants.PLAY_AGENT_FINISH_POSITION_SELECTION_SCREEN_IDENTIFIER)
     self.__environment_service: EnvironmentService = environment_service
     self.__view_service: ViewUiService = view_service
     self.grid_view: Optional[flet.Column] = None
@@ -149,9 +149,9 @@ class PlayAgentPositionSelectionViewUi(ViewUi):
       controls=[
         flet.Column(
           controls=[
-            flet.Text('Posición del Agente', text_align=flet.TextAlign.CENTER, style=UiConstants.TITLE_TEXT_STYLE),
+            flet.Text('Meta del Agente', text_align=flet.TextAlign.CENTER, style=UiConstants.TITLE_TEXT_STYLE),
             flet.Text(
-              'Haz click en una celda para seleccionar la posición inicial del agente',
+              'Haz click en una celda para seleccionar la posición final del agente',
               style=UiConstants.NORMAL_TEXT_STYLE,
               text_align=flet.TextAlign.CENTER,
               max_lines=3,  # Número máximo de líneas antes de hacer wrap
@@ -185,8 +185,8 @@ class PlayAgentPositionSelectionViewUi(ViewUi):
     selected_agent: Optional[Agent] = environment.get_selected_agent()
     if selected_agent is None:
       return
-    selected_agent.update_position(self.selected_position_row, self.selected_position_col)
-    self.__view_service.navigate_to(ViewUiConstants.PLAY_AGENT_FINISH_POSITION_SELECTION_SCREEN_IDENTIFIER)
+    selected_agent.set_finish_position(self.selected_position_row, self.selected_position_col)
+    self.__view_service.navigate_to(ViewUiConstants.PLAY_GAME_SCREEN_IDENTIFIER)
 
   def update_grid_view(self):
     new_grid_items = self.generate_visible_cells(self.start_row, self.start_col)

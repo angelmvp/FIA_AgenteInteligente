@@ -28,10 +28,29 @@ class Environment:
       columns (int): The number of columns in the environment
     """
     self.__agents: list[Agent] = agents
+    self.__selected_agent: Optional[Agent] = None
     self.__discovered_map: list[list[bool]] = discovered_map
     self.__grid: list[list[Cell]] = grid
     self.__rows: int = rows
     self.__columns: int = columns
+
+  def get_selected_agent(self) -> Optional[Agent]:
+    """
+    Returns the selected agent.
+
+    Returns:
+      Optional[Agent]: The selected agent.
+    """
+    return self.__selected_agent
+
+  def set_selected_agent(self, agent: Optional[Agent]):
+    """
+    Sets the selected agent.
+
+    Args:
+      agent (Optional[Agent]): The agent to be selected.
+    """
+    self.__selected_agent = agent
 
   def get_agents(self) -> list[Agent]:
     """
