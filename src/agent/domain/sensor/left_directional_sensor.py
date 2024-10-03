@@ -28,4 +28,4 @@ class LeftDirectionalSensor(DirectionalSensor):
     Returns:
         tuple[int, int]: The new coordinates after moving left.
     """
-    return x - i, y
+    return x, y - 1

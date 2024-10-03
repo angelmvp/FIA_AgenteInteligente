@@ -4,10 +4,11 @@ import flet
 from click import style
 from rich.cells import cell_len
 
+from src.agent.domain.action.action import ActionResult
 from src.agent.domain.action.action_configuration import ActionConfiguration
 from src.agent.domain.agent import Agent
 from src.agent.domain.sensor.sensor_configuration import SensorConfiguration
-from src.environment.application.environment_agent_service import EnvironmentAgentService
+from src.environment.application.environment_agent_service import EnvironmentAgentService, ExecuteActionResult
 from src.environment.application.environment_service import EnvironmentService
 from src.environment.domain.cell.cell import Cell
 from src.environment.domain.environment import Environment
@@ -89,5 +90,22 @@ class PlayGameActionsViewUi(ViewUi):
     selected_agent: Optional[Agent] = environment.get_selected_agent()
     if selected_agent is None:
       return
-    self.__environment_agent_service.execute_action(selected_agent, environment, selected_action)
+    execute_action_result: ExecuteActionResult = self.__environment_agent_service.execute_action(selected_agent, environment, selected_action)
+    action_result: ActionResult = execute_action_result.get_action_result()
+    if execute_action_result.get_action_result() == ActionResult.GOAL_REACHED:
+      self.__view_service.show_alert('¡Has llegado a la meta!')
+    elif action_result == ActionResult.SUCCESS:
+      self.__view_service.show_alert('Acción realizada con éxito')
+    elif action_result == ActionResult.INVALID_PROPERTY:
+      self.__view_service.show_alert('Propiedad inválida')
+    elif action_result == ActionResult.OUT_OF_BOUNDS:
+      self.__view_service.show_alert('Fuera de los límites')
+    elif action_result == ActionResult.HIT_OBSTACLE:
+      self.__view_service.show_alert('Chocaste con un obstáculo')
+    elif action_result == ActionResult.UNKNOWN_CELL:
+      self.__view_service.show_alert('Celda desconocida')
+    elif action_result == ActionResult.UNKNOWN_DIRECTION:
+      self.__view_service.show_alert('Dirección desconocida')
+    else:
+      self.__view_service.show_alert('Error al realizar la acción')
     self.__view_service.navigate_to(ViewUiConstants.PLAY_GAME_SCREEN_IDENTIFIER)

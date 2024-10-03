@@ -30,4 +30,4 @@ class MoveUpAction(MoveAction):
     Returns:
       Optional[MoveActionNewCoordinates]: The new coordinates after moving up.
     """
-    return MoveActionNewCoordinates(0, -steps, Direction.UP)
+    return MoveActionNewCoordinates(-steps, 0, Direction.UP)

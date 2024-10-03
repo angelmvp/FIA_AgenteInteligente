@@ -30,4 +30,4 @@ class MoveLeftAction(MoveAction):
     Returns:
       Optional[MoveActionNewCoordinates]: The new coordinates after moving left.
     """
-    return MoveActionNewCoordinates(-steps, 0, Direction.LEFT)
+    return MoveActionNewCoordinates(0, -steps, Direction.LEFT)

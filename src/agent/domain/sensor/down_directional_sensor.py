@@ -28,4 +28,4 @@ class DownDirectionalSensor(DirectionalSensor):
     Returns:
         tuple[int, int]: The new coordinates after moving down.
     """
-    return x, y + i
+    return x + 1, y

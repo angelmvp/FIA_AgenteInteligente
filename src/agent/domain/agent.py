@@ -171,21 +171,21 @@ class Agent:
     """
     self.__known_map[y][x] = KnownCell([])
 
-  def add_flag(self, x: int, y: int, flag: str) -> bool:
+  def add_flag(self, x: int, y: int, flags: list[str]) -> bool:
     """
     Adds a flag to a cell.
 
     Args:
       x (int): The x-coordinate of the cell.
       y (int): The y-coordinate of the cell.
-      flag (str): The flag to be added.
+      flags (str): The flag to be added.
 
     Returns:
       bool: True if the flag was added, False if it was already present.
     """
     if not self.is_known(x, y):
       return False
-    return self.__known_map[y][x].add_flag(flag)
+    return self.__known_map[y][x].add_flags(flags)
 
   def remove_flag(self, x: int, y: int, flag: str) -> bool:
     """
@@ -243,9 +243,13 @@ class Agent:
       x (int): The new x-coordinate.
       y (int): The new y-coordinate.
     """
+    previous_cell: Optional[KnownCell] = self.__known_map[self.__y][self.__x]
+    if previous_cell is not None:
+      previous_cell.remove_flag('X')
     self.__x = x
     self.__y = y
     self.set_known(x, y)
+    self.__known_map[y][x].add_flags(['X', 'V'])
 
   def get_x(self) -> int:
     """
@@ -335,6 +339,15 @@ class Agent:
       tuple[int, int]: The finish position.
     """
     return self.__finish_position_x, self.__finish_position_y
+
+  def is_at_finish_position(self) -> bool:
+    """
+    Checks if the agent is at the finish position.
+
+    Returns:
+      bool: True if the agent is at the finish position, False otherwise.
+    """
+    return self.__x == self.__finish_position_x and self.__y == self.__finish_position_y
 
   def is_in_position(self, x: int, y: int) -> bool:
     """

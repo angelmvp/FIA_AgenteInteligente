@@ -30,4 +30,4 @@ class MoveRightAction(MoveAction):
     Returns:
       Optional[MoveActionNewCoordinates]: The new coordinates after moving right.
     """
-    return MoveActionNewCoordinates(steps, 0, Direction.RIGHT)
+    return MoveActionNewCoordinates(0, steps, Direction.RIGHT)

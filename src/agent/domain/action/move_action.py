@@ -126,4 +126,7 @@ class MoveAction(Action, ABC):
     agent.update_position(x, y)
     agent.increase_accumulated_movement_cost(movement_cost)
     agent.increase_steps()
+
+    if agent.is_at_finish_position():
+      return ActionResult.GOAL_REACHED
     return ActionResult.SUCCESS

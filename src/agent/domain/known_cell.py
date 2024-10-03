@@ -15,20 +15,22 @@ class KnownCell:
     """
     self.__flags: list[str] = flags
 
-  def add_flag(self, flag: str) -> bool:
+  def add_flags(self, flags: list[str]) -> bool:
     """
     Adds a flag to the cell if it is not already present.
 
     Args:
-      flag (str): The flag to be added.
+      flags (str): The flags to be added.
 
     Returns:
       bool: True if the flag was added, False if it was already present.
     """
-    if flag not in self.__flags:
-      self.__flags.append(flag)
-      return True
-    return False
+    for flag in flags:
+      if flag not in self.__flags:
+        self.__flags.append(flag)
+      else:
+        return False
+    return True
 
   def remove_flag(self, flag: str) -> bool:
     """

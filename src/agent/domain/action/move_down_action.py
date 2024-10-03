@@ -30,4 +30,4 @@ class MoveDownAction(MoveAction):
     Returns:
       Optional[MoveActionNewCoordinates]: The new coordinates after moving down.
     """
-    return MoveActionNewCoordinates(0, steps, Direction.DOWN)
+    return MoveActionNewCoordinates(steps, 0, Direction.DOWN)

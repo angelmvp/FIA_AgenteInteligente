@@ -55,11 +55,12 @@ class PlayGameViewUi(ViewUi):
     movement_cost: int = cell.get_movement_cost_for(selected_agent.get_name())
     self.cell_cost_control.value = f'Costo: {movement_cost if movement_cost is not None else "No puede pasar."}'
 
-    flags: str = ', '.join(selected_agent.list_flags(row, col))
-    if flags == '':
+    flags: list[str] = selected_agent.list_flags(row, col)
+    flags_len: int = len(flags)
+    if flags_len == 0:
       self.cell_flags_control.value = 'No hay marcas'
     else:
-      self.cell_flags_control.value = f'Marcas: {flags}'
+      self.cell_flags_control.value = f'Marcas: {', '.join(flags)}'
 
   def on_click_cell(self, event: flet.ControlEvent, row: int, col: int):
     self.update_cell_information(row, col)
@@ -233,7 +234,8 @@ class PlayGameViewUi(ViewUi):
             flet.Column(
               controls=[
                 flet.ElevatedButton('Sensores', style=UiConstants.BUTTON_STYLE, on_click=self.on_click_sensors),
-                flet.ElevatedButton('Acciones', style=UiConstants.BUTTON_STYLE, on_click=self.on_click_actions)
+                flet.ElevatedButton('Acciones', style=UiConstants.BUTTON_STYLE, on_click=self.on_click_actions),
+                flet.ElevatedButton('Salir', style=UiConstants.BUTTON_STYLE, on_click=lambda e: self.__view_service.navigate_to(ViewUiConstants.MAIN_SCREEN_IDENTIFIER))
               ],
               alignment=flet.MainAxisAlignment.CENTER,
               horizontal_alignment=flet.CrossAxisAlignment.CENTER

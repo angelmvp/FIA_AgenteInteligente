@@ -17,6 +17,7 @@ class ActionResult(Enum):
     UNKNOWN_CELL (int): The action encountered an unknown cell.
     UNKNOWN_DIRECTION (int): The action encountered an unknown direction.
     INVALID_PROPERTY (int): The action had an invalid property.
+    GOAL_REACHED (int): The action reached the goal.
   """
   SUCCESS = 1
   OUT_OF_BOUNDS = 2
@@ -24,6 +25,7 @@ class ActionResult(Enum):
   UNKNOWN_CELL = 4
   UNKNOWN_DIRECTION = 5
   INVALID_PROPERTY = 6
+  GOAL_REACHED = 7
 
 
 class Action:

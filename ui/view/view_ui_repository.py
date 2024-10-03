@@ -1,5 +1,6 @@
 import flet
 
+from ui.ui_constants import UiConstants
 from ui.view.view_ui import ViewUi
 
 
@@ -17,6 +18,11 @@ class ViewUiService:
       return view_instance.create_control()
     else:
       raise ValueError(f"View '{identifier}' not registered.")
+
+  def show_alert(self, message: str) -> None:
+    self.__page.snack_bar = flet.SnackBar(flet.Text(message, style=UiConstants.NORMAL_TEXT_STYLE), duration=2500)
+    self.__page.snack_bar.open = True
+    self.__page.update()
 
   def navigate_to(self, identifier: str) -> None:
     if identifier in self.__views:

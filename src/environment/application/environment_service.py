@@ -56,7 +56,7 @@ class EnvironmentService:
       for column in range(map.get_columns()):
         terrain: Optional[Terrain] = self.__terrain_repository.get_by_code(map.get_cell(row, column))
         if terrain is None:
-          raise ValueError(f"Terrain with code {map.get_cell(row, column)} not found.")
+          raise ValueError(f'Terrain with code {map.get_cell(row, column)} not found.')
         cells[row].append(Cell(terrain, row, column))
     return cells
 
